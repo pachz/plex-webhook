@@ -1,5 +1,5 @@
 {
-  "name": "plex-notifications",
+  "name": "plex-webhook-slack",
   "version": "0.0.1",
   "private": true,
   "scripts": {
