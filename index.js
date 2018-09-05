@@ -78,8 +78,9 @@ app.post('/', upload.single('thumb'), async (req, res, next) => {
 
   // post to slack
   if (isVideo || isMediaRate(payload.event)) {
+    let location = '';
     if (isMediaScrobble(payload.event) && isVideo) {
-      // const location = await getLocation(payload.Player.publicAddress);
+      // location = await getLocation(payload.Player.publicAddress);
     }
 
     const action = getAction(payload.event);
@@ -174,7 +175,7 @@ function formatSubtitle(metadata) {
   return ret;
 }
 
-function notifySlack(imageUrl, payload, location = '', action) {
+function notifySlack(imageUrl, payload, location, action) {
   let locationText = '';
 
   if (location) {
