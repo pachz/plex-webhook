@@ -7,6 +7,7 @@ const request = require('request-promise-native');
 const sha1 = require('sha1');
 const Slack = require('slack-node');
 const upload = multer({storage: multer.memoryStorage()});
+const Discord = require('discord.js');
 
 const SEVEN_DAYS = 7 * 24 * 60 * 60; // in seconds
 
@@ -222,6 +223,7 @@ function isMediaScrobble(mediaEvent) {
   return mediaEvent === MEDIA_VIEWED;
 }
 
+// DKTODO: only showing "Season Nr."
 function isMediaRate(mediaEvent) {
   return mediaEvent === MEDIA_RATED;
 }
