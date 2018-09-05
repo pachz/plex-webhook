@@ -174,7 +174,7 @@ function formatSubtitle(metadata) {
   return ret;
 }
 
-function notifySlack(imageUrl, payload, location, action) {
+function notifySlack(imageUrl, payload, location = '', action) {
   let locationText = '';
 
   if (location) {
