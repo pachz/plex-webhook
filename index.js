@@ -6,9 +6,18 @@ const Redis = require('ioredis');
 const request = require('request-promise-native');
 const sha1 = require('sha1');
 const Slack = require('slack-node');
-const upload = multer({ storage: multer.memoryStorage() });
+const upload = multer({storage: multer.memoryStorage()});
 
 const SEVEN_DAYS = 7 * 24 * 60 * 60; // in seconds
+
+//
+// media naming
+const MEDIA_PLAYING = 'media.play';
+const MEDIA_PAUSED = 'media.pause';
+const MEDIA_RESUMED = 'media.resume';
+const MEDIA_STOPPED = 'media.stop';
+const MEDIA_VIEWED = 'media.scrobble';
+const MEDIA_RATED = 'media.rate';
 
 //
 // setup
@@ -37,8 +46,7 @@ app.listen(port, () => {
 //
 // routes
 
-app.post('/', upload.single('thumb'), async(req, res, next) => {
-  console.log(req.body.payload);
+app.post('/', upload.single('thumb'), async (req, res, next) => {
   const payload = JSON.parse(req.body.payload);
   const isVideo = (payload.Metadata.librarySectionType === 'movie' || payload.Metadata.librarySectionType === 'show');
   const isAudio = (payload.Metadata.librarySectionType === 'artist');
@@ -53,7 +61,7 @@ app.post('/', upload.single('thumb'), async(req, res, next) => {
   let image = await redis.getBuffer(key);
 
   // save new image
-  if (payload.event === 'media.play' || payload.event === 'media.rate') {
+  if (isMediaPlay(payload.mediaEvent) || isMediaRate(payload.event)) {
     if (image) {
       console.log('[REDIS]', `Using cached image ${key}`);
     } else if (!image && req.file && req.file.buffer) {
@@ -69,20 +77,22 @@ app.post('/', upload.single('thumb'), async(req, res, next) => {
   }
 
   // post to slack
-  if ((payload.event === 'media.scrobble' && isVideo) || payload.event === 'media.rate') {
-    const location = await getLocation(payload.Player.publicAddress);
+  if (isVideo || isMediaRate(payload.event)) {
+    if (isMediaScrobble(payload.event) && isVideo) {
+      // const location = await getLocation(payload.Player.publicAddress);
+    }
 
-    let action;
+    const action = getAction(payload.event);
 
-    if (payload.event === 'media.scrobble') {
-      action = 'played';
+    if (isMediaScrobble(payload.event)) {
+      // action = 'played';
     } else if (payload.rating > 0) {
-      action = 'rated ';
+      action += ' ';
       for (var i = 0; i < payload.rating / 2; i++) {
         action += ':star:';
       }
     } else {
-      action = 'unrated';
+      // action = 'unrated';
     }
 
     if (image) {
@@ -98,7 +108,7 @@ app.post('/', upload.single('thumb'), async(req, res, next) => {
 
 });
 
-app.get('/images/:key', async(req, res, next) => {
+app.get('/images/:key', async (req, res, next) => {
   const exists = await redis.exists(req.params.key);
 
   if (!exists) {
@@ -127,7 +137,7 @@ app.use((err, req, res, next) => {
 // helpers
 
 function getLocation(ip) {
-  return request.get(`http://api.ipstack.com/${ip}?access_key=${process.env.IPSTACK_KEY}`, { json: true });
+  return request.get(`http://api.ipstack.com/${ip}?access_key=${process.env.IPSTACK_KEY}`, {json: true});
 }
 
 function formatTitle(metadata) {
@@ -185,5 +195,58 @@ function notifySlack(imageUrl, payload, location, action) {
       footer: `${action} by ${payload.Account.title} on ${payload.Player.title} from ${payload.Server.title} ${locationText}`,
       footer_icon: payload.Account.thumb
     }]
-  }, () => {});
+  }, () => {
+  });
+}
+
+function isMediaPlay(mediaEvent) {
+  return mediaEvent === MEDIA_PLAYING;
+}
+
+function isMediaPause(mediaEvent) {
+  return mediaEvent === MEDIA_PAUSED;
+}
+
+function isMediaResume(mediaEvent) {
+  return mediaEvent === MEDIA_RESUMED;
+}
+
+function isMediaStop(mediaEvent) {
+  return mediaEvent === MEDIA_STOPPED;
+}
+
+function isMediaScrobble(mediaEvent) {
+  return mediaEvent === MEDIA_VIEWED;
+}
+
+function isMediaRate(mediaEvent) {
+  return mediaEvent === MEDIA_RATED;
+}
+
+function getAction(mediaEvent) {
+  let action = 'unkown';
+  switch (mediaEvent) {
+    case MEDIA_PLAYING:
+      action = 'played';
+      break;
+    case MEDIA_PAUSED:
+      action = 'paused';
+      break;
+    case MEDIA_RESUMED:
+      action = 'resumed';
+      break;
+    case MEDIA_STOPPED:
+      action = 'stopped';
+      break;
+    case MEDIA_VIEWED:
+      action = 'viewed';
+      break;
+    case MEDIA_RATED:
+      action = 'rated';
+      break;
+    default:
+      action = 'unkown'
+  }
+
+  return action;
 }
