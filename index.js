@@ -38,6 +38,7 @@ app.listen(port, () => {
 // routes
 
 app.post('/', upload.single('thumb'), async(req, res, next) => {
+  console.log(req.body.payload);
   const payload = JSON.parse(req.body.payload);
   const isVideo = (payload.Metadata.librarySectionType === 'movie' || payload.Metadata.librarySectionType === 'show');
   const isAudio = (payload.Metadata.librarySectionType === 'artist');
