@@ -13,8 +13,6 @@
     "ioredis": "^2.5.0",
     "morgan": "^1.8.1",
     "multer": "^1.2.1",
-    "node-gyp": "^3.8.0",
-    "rebuild": "^0.1.2",
     "request": "^2.87.0",
     "request-promise-native": "^1.0.5",
     "sha1": "^1.1.1",
@@ -22,6 +20,8 @@
     "slack-node": "^0.1.8"
   },
   "devDependencies": {
-    "eslint": "^3.19.0"
+    "eslint": "^3.19.0",
+    "node-gyp": "^3.8.0",
+    "rebuild": "^0.1.2"
   }
 }
