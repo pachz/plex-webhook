@@ -85,7 +85,7 @@ app.post('/', upload.single('thumb'), async (req, res, next) => {
       // location = await getLocation(payload.Player.publicAddress);
     }
 
-    const action = getAction(payload.event);
+    let action = getAction(payload.event);
 
     if (isMediaScrobble(payload.event)) {
       // action = 'played';
