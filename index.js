@@ -6,7 +6,7 @@ const Redis = require('ioredis');
 const request = require('request-promise-native');
 const sha1 = require('sha1');
 const Slack = require('slack-node');
-const upload = multer({storage: multer.memoryStorage()});
+const upload = multer({ storage: multer.memoryStorage() });
 const Discord = require('discord.js');
 
 const SEVEN_DAYS = 7 * 24 * 60 * 60; // in seconds
@@ -22,7 +22,8 @@ const MEDIA_RATED = 'media.rate';
 
 //
 // setup
-
+const discordChannel = process.env.DISCORD_CHANNEL_ID;
+// const discordToken = process.env.DISCORD_TOKEN;
 const channel = process.env.SLACK_CHANNEL;
 const appURL = process.env.APP_URL;
 const redis = new Redis(process.env.REDIS_URL);
@@ -32,6 +33,11 @@ const redis = new Redis(process.env.REDIS_URL);
 
 const slack = new Slack();
 slack.setWebhook(process.env.SLACK_URL);
+
+//
+// Discord
+const client = new Discord.Client();
+client.login(process.env.DISCORD_TOKEN);
 
 //
 // express
@@ -141,7 +147,7 @@ app.use((err, req, res, next) => {
 // helpers
 
 function getLocation(ip) {
-  return request.get(`http://api.ipstack.com/${ip}?access_key=${process.env.IPSTACK_KEY}`, {json: true});
+  return request.get(`http://api.ipstack.com/${ip}?access_key=${process.env.IPSTACK_KEY}`, { json: true });
 }
 
 function formatTitle(metadata) {
@@ -250,7 +256,7 @@ function getAction(mediaEvent) {
       action = 'rated';
       break;
     default:
-      action = 'unkown'
+      action = 'unkown';
   }
 
   return action;
