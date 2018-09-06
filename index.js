@@ -73,7 +73,7 @@ app.listen(port, () => {
 //
 // routes
 
-app.post('/', upload.single('thumb'), async (req, res, next, message = payload.Metadata) => {
+app.post('/', upload.single('thumb'), async (req, res, next) => {
   const payload = JSON.parse(req.body.payload); // DKTODO: create function for this
   const isVideo = (payload.Metadata.librarySectionType === 'movie' || payload.Metadata.librarySectionType === 'show'); // DKTODO: create function for this
   const isAudio = (payload.Metadata.librarySectionType === 'artist'); // DKTODO: create function for this
@@ -88,7 +88,7 @@ app.post('/', upload.single('thumb'), async (req, res, next, message = payload.M
   let image = await redis.getBuffer(key);
 
   console.debug(payload.Server);
-  console.debug(message);
+  console.debug(payload.Metadata);
 
   // save new image
   if (!image && req.file && req.file.buffer) {
