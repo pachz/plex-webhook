@@ -255,8 +255,8 @@ function notifyDiscord(imageUrl, payload, location, action) {
       }],
       timestamp: new Date(),
       footer: {
-        icon_url: payload.Account.thumb,
-        text: `${action} on ${payload.Player.title} from ${payload.Server.title} ${locationText}`
+        icon_url: 'https://dl2.macupdate.com/images/icons256/42311.png?d=1535042731',
+        text: `${action} from ${payload.Server.title} ${locationText}`
       }
     }
   });
