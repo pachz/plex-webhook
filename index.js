@@ -119,6 +119,7 @@ app.post('/', upload.single('thumb'), async (req, res, next) => {
     }
   }
 
+  console.log('[DISCORD]', `post to discord: ${postToDiscord}`);
   // post to discord
   if (postToDiscord) {
     console.log('[DISCORD]', `Sending test-message`);
