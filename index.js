@@ -252,13 +252,8 @@ function notifyDiscord(imageUrl, payload, location, action) {
         name: discordClient.user.username,
         icon_url: discordClient.user.avatarURL
       },
-      title: `${title} ${action}`,
-      url: 'https://www.driiftkiing.ch',
-      description: '',
-      fields: [{
-        name: formatTitle(payload.Metadata),
-        value: formatSubtitle(payload.Metadata)
-      }],
+      title: formatTitle(payload.Metadata),
+      description: formatSubtitle(payload.Metadata),
       timestamp: new Date(),
       footer: {
         icon_url: 'https://dl2.macupdate.com/images/icons256/42311.png?d=1535042731',
