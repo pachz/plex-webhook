@@ -189,7 +189,7 @@ function notifySlack(imageUrl, payload, location, action) {
     const state = location.country_code === 'US' ? location.region_name : location.country_name;
     locationText = `near ${location.city}, ${state}`;
   }
-  
+
   // DKTODO: temporary fix
   const title = formatTitle(payload.Metadata);
 
@@ -237,7 +237,7 @@ function isMediaRate(mediaEvent) {
 
 function getAction(mediaEvent) {
   let action = 'unkown';
-  
+
   switch (mediaEvent) {
     case MEDIA_PLAYING:
       action = 'playing';
