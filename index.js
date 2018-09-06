@@ -21,29 +21,39 @@ const MEDIA_VIEWED = 'media.scrobble';
 const MEDIA_RATED = 'media.rate';
 
 //
-// setup
-const discordChannel = process.env.DISCORD_CHANNEL_ID;
-// const discordToken = process.env.DISCORD_TOKEN;
-const channel = process.env.SLACK_CHANNEL;
+// app config
 const appURL = process.env.APP_URL;
-const redis = new Redis(process.env.REDIS_URL);
+const port = process.env.PORT || 11000;
+const redisUrl = process.env.REDIS_URL;
 
 //
-// slack
+// slack config
+const postToSlack = process.env.POST_TO_SLACK || false;
+const anonymizeUserForSlack = process.env.ANONYMIZE_USER_FOR_SLACK || true;
+const slackUrl = process.env.SLACK_URL;
+const slackChannel = process.env.SLACK_CHANNEL;
 
+//
+// discord config
+const postToDiscord = process.env.POST_TO_DISCORD || false;
+const anonymizeUserForDiscord = process.env.ANONYMIZE_USER_FOR_DISCORD || true;
+const discordChannel = process.env.DISCORD_CHANNEL_ID;
+const discordToken = process.env.DISCORD_TOKEN;
+
+//
+// init slack
 const slack = new Slack();
-slack.setWebhook(process.env.SLACK_URL);
+slack.setWebhook(slackUrl);
 
 //
-// Discord
+// init discord
 const client = new Discord.Client();
 client.login(process.env.DISCORD_TOKEN);
 
 //
-// express
-
+// init
 const app = express();
-const port = process.env.PORT || 11000;
+const redis = new Redis(redisUrl);
 
 app.use(morgan('dev'));
 app.listen(port, () => {
@@ -54,10 +64,10 @@ app.listen(port, () => {
 // routes
 
 app.post('/', upload.single('thumb'), async (req, res, next) => {
-  const payload = JSON.parse(req.body.payload);
-  const isVideo = (payload.Metadata.librarySectionType === 'movie' || payload.Metadata.librarySectionType === 'show');
-  const isAudio = (payload.Metadata.librarySectionType === 'artist');
-  const key = sha1(payload.Server.uuid + payload.Metadata.ratingKey);
+  const payload = JSON.parse(req.body.payload); // DKTODO: create function for this
+  const isVideo = (payload.Metadata.librarySectionType === 'movie' || payload.Metadata.librarySectionType === 'show'); // DKTODO: create function for this
+  const isAudio = (payload.Metadata.librarySectionType === 'artist'); // DKTODO: create function for this
+  const key = sha1(payload.Server.uuid + payload.Metadata.ratingKey); // DKTODO: create function for this
 
   // missing required properties
   if (!payload.Metadata || !(isAudio || isVideo)) {
@@ -67,41 +77,30 @@ app.post('/', upload.single('thumb'), async (req, res, next) => {
   // retrieve cached image
   let image = await redis.getBuffer(key);
 
-  // save new image
-  if (isMediaPlay(payload.mediaEvent) || isMediaRate(payload.event)) {
-    if (image) {
-      console.log('[REDIS]', `Using cached image ${key}`);
-    } else if (!image && req.file && req.file.buffer) {
-      console.log('[REDIS]', `Saving new image ${key}`);
-      image = await sharp(req.file.buffer)
-        .resize(75, 75)
-        .background('white')
-        .embed()
-        .toBuffer();
+  console.debug(image);
 
-      redis.set(key, image, 'EX', SEVEN_DAYS);
-    }
+  // save new image
+  if (!image && req.file && req.file.buffer) {
+    console.log('[REDIS]', `Saving new image ${key}`);
+    image = await sharp(req.file.buffer)
+      .resize(75, 75)
+      .background('white')
+      .embed()
+      .toBuffer();
+
+    redis.set(key, image, 'EX', SEVEN_DAYS);
+  } else {
+    console.log('[REDIS]', `Using cached image ${key}`);
   }
 
   // post to slack
-  if (isVideo || isMediaRate(payload.event)) {
+  if (postToSlack) {
     let location = '';
-    if (isMediaScrobble(payload.event) && isVideo) {
-      // location = await getLocation(payload.Player.publicAddress);
+    if (isVideo) {
+      location = await getLocation(payload.Player.publicAddress);
     }
 
-    let action = getAction(payload.event);
-
-    if (isMediaScrobble(payload.event)) {
-      // action = 'played';
-    } else if (payload.rating > 0) {
-      action += ' ';
-      for (var i = 0; i < payload.rating / 2; i++) {
-        action += ':star:';
-      }
-    } else {
-      // action = 'unrated';
-    }
+    let action = getAction(payload);
 
     if (image) {
       console.log('[SLACK]', `Sending ${key} with image`);
@@ -112,8 +111,12 @@ app.post('/', upload.single('thumb'), async (req, res, next) => {
     }
   }
 
-  res.sendStatus(200);
+  // post to discord
+  if (postToDiscord) {
+    // DKTODO
+  }
 
+  res.sendStatus(200);
 });
 
 app.get('/images/:key', async (req, res, next) => {
@@ -194,7 +197,7 @@ function notifySlack(imageUrl, payload, location, action) {
   const title = formatTitle(payload.Metadata);
 
   slack.webhook({
-    channel,
+    slackChannel,
     username: 'Plex',
     icon_emoji: ':plex:',
     attachments: [{
@@ -235,10 +238,10 @@ function isMediaRate(mediaEvent) {
   return mediaEvent === MEDIA_RATED;
 }
 
-function getAction(mediaEvent) {
+function getAction(payload) {
   let action = 'unkown';
 
-  switch (mediaEvent) {
+  switch (payload.event) {
     case MEDIA_PLAYING:
       action = 'playing';
       break;
@@ -256,6 +259,13 @@ function getAction(mediaEvent) {
       break;
     case MEDIA_RATED:
       action = 'rated';
+
+      if (payload.rating > 0) {
+        action += ' ';
+        for (var i = 0; i < payload.rating / 2; i++) {
+          action += ':star:';
+        }
+      }
       break;
     default:
       action = 'unkown';
