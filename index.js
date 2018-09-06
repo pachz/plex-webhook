@@ -183,13 +183,16 @@ function notifySlack(imageUrl, payload, location, action) {
     const state = location.country_code === 'US' ? location.region_name : location.country_name;
     locationText = `near ${location.city}, ${state}`;
   }
+  
+  // DKTODO: temporary fix
+  const title = formatTitle(payload.Metadata);
 
   slack.webhook({
     channel,
     username: 'Plex',
     icon_emoji: ':plex:',
     attachments: [{
-      fallback: 'Required plain-text summary of the attachment.',
+      fallback: `${title} ${action} by ${payload.Account.title}`,
       color: '#a67a2d',
       title: formatTitle(payload.Metadata),
       text: formatSubtitle(payload.Metadata),
@@ -228,6 +231,7 @@ function isMediaRate(mediaEvent) {
 
 function getAction(mediaEvent) {
   let action = 'unkown';
+  
   switch (mediaEvent) {
     case MEDIA_PLAYING:
       action = 'playing';
