@@ -242,16 +242,9 @@ function notifyDiscord(imageUrl, payload, location, action) {
     locationText = `near ${location.city}, ${state}`;
   }
 
-  // DKTODO: temporary fix
-  const title = formatTitle(payload.Metadata);
-
   discordClient.channels.get(discordChannel).send({
     embed: {
       color: 3447003,
-      author: {
-        name: discordClient.user.username,
-        icon_url: discordClient.user.avatarURL
-      },
       title: formatTitle(payload.Metadata),
       description: formatSubtitle(payload.Metadata),
       timestamp: new Date(),
