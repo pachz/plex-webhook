@@ -101,15 +101,16 @@ app.post('/', upload.single('thumb'), async (req, res, next) => {
     console.log('[REDIS]', `Using cached image ${key}`);
   }
 
+  let location = '';
+
+  if (isVideo) {
+    location = await getLocation(payload.Player.publicAddress);
+  }
+
+  const action = getAction(payload);
+
   // post to slack
   if (postToSlack) {
-    let location = '';
-    if (isVideo) {
-      location = await getLocation(payload.Player.publicAddress);
-    }
-
-    const action = getAction(payload);
-
     if (image) {
       console.log('[SLACK]', `Sending ${key} with image`);
       notifySlack(appURL + '/images/' + key, payload, location, action);
@@ -119,11 +120,15 @@ app.post('/', upload.single('thumb'), async (req, res, next) => {
     }
   }
 
-  console.log('[DISCORD]', `post to discord: ${postToDiscord}`);
   // post to discord
   if (postToDiscord) {
-    console.log('[DISCORD]', `Sending test-message`);
-    discordClient.channels.get(discordChannel).send('Plex forever :-D');
+    if (image) {
+      console.log('[DISCORD]', `Sending ${key} with image`);
+      notifyDiscord(appURL + '/images/' + key, payload, location, action);
+    } else {
+      console.log('[DISCORD]', `Sending ${key} without image`);
+      notifyDiscord(null, payload, location, action);
+    }
   }
 
   res.sendStatus(200);
@@ -221,6 +226,12 @@ function notifySlack(imageUrl, payload, location, action) {
     }]
   }, () => {
   });
+}
+
+function notifyDiscord() {
+  // discordClient.channels.get(discordChannel).send({
+  //
+  // });
 }
 
 function isMediaPlay(mediaEvent) {
