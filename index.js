@@ -61,13 +61,11 @@ app.post('/', upload.single('thumb'), async (req, res, next) => {
   // retrieve cached image
   let image = await redis.getBuffer(key);
 
-  if (image) {
-    console.log('[REDIS]', `Using cached image ${key}`);
-  }
-
   // save new image
   if (isMediaPlay(payload.mediaEvent) || isMediaRate(payload.event)) {
-    if (!image && req.file && req.file.buffer) {
+    if (image) {
+      console.log('[REDIS]', `Using cached image ${key}`);
+    } else if (!image && req.file && req.file.buffer) {
       console.log('[REDIS]', `Saving new image ${key}`);
       image = await sharp(req.file.buffer)
         .resize(75, 75)
