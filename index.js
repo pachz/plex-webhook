@@ -228,10 +228,38 @@ function notifySlack(imageUrl, payload, location, action) {
   });
 }
 
-function notifyDiscord() {
-  // discordClient.channels.get(discordChannel).send({
-  //
-  // });
+function notifyDiscord(imageUrl, payload, location, action) {
+  let locationText = '';
+
+  if (location) {
+    const state = location.country_code === 'US' ? location.region_name : location.country_name;
+    locationText = `near ${location.city}, ${state}`;
+  }
+
+  // DKTODO: temporary fix
+  const title = formatTitle(payload.Metadata);
+
+  discordClient.channels.get(discordChannel).send({
+    embed: {
+      color: 3447003,
+      author: {
+        name: discordClient.user.username,
+        icon_url: discordClient.user.avatarURL
+      },
+      title: `${title} ${action}`,
+      url: 'https://www.driiftkiing.ch',
+      description: '',
+      fields: [{
+        name: formatTitle(payload.Metadata),
+        value: formatSubtitle(payload.Metadata)
+      }],
+      timestamp: new Date(),
+      footer: {
+        icon_url: payload.Account.thumb,
+        text: `${action} on ${payload.Player.title} from ${payload.Server.title} ${locationText}`
+      }
+    }
+  });
 }
 
 function isMediaPlay(mediaEvent) {
