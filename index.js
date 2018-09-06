@@ -81,7 +81,13 @@ app.post('/', upload.single('thumb'), async (req, res, next) => {
 
   // missing required properties
   if (!payload.Metadata || !(isAudio || isVideo)) {
+    console.error('[APP]', `missing required properties`);
     return res.sendStatus(400);
+  }
+
+  if (isMediaPause(payload.event) || isMediaResume(payload.event)) {
+    console.error('[APP]', `Event type is: "${payload.event}".  Will be not posted.`);
+    return res.sendStatus(300);
   }
 
   // retrieve cached image
