@@ -230,7 +230,7 @@ function getAction(mediaEvent) {
   let action = 'unkown';
   switch (mediaEvent) {
     case MEDIA_PLAYING:
-      action = 'played';
+      action = 'playing';
       break;
     case MEDIA_PAUSED:
       action = 'paused';
