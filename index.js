@@ -13,6 +13,7 @@ const SEVEN_DAYS = 7 * 24 * 60 * 60; // in seconds
 
 //
 // media naming
+
 const MEDIA_PLAYING = 'media.play';
 const MEDIA_PAUSED = 'media.pause';
 const MEDIA_RESUMED = 'media.resume';
@@ -22,12 +23,14 @@ const MEDIA_RATED = 'media.rate';
 
 //
 // app config
+
 const appURL = process.env.APP_URL;
 const port = process.env.PORT || 11000;
 const redisUrl = process.env.REDIS_URL;
 
 //
 // slack config
+
 const postToSlack = process.env.POST_TO_SLACK || false;
 const anonymizeUserForSlack = process.env.ANONYMIZE_USER_FOR_SLACK || true;
 const slackUrl = process.env.SLACK_URL;
@@ -35,6 +38,7 @@ const slackChannel = process.env.SLACK_CHANNEL;
 
 //
 // discord config
+
 const postToDiscord = process.env.POST_TO_DISCORD || false;
 const anonymizeUserForDiscord = process.env.ANONYMIZE_USER_FOR_DISCORD || true;
 const discordChannel = process.env.DISCORD_CHANNEL_ID;
@@ -42,18 +46,24 @@ const discordToken = process.env.DISCORD_TOKEN;
 
 //
 // init slack
+
 const slack = new Slack();
 slack.setWebhook(slackUrl);
 
 //
 // init discord
+
 const client = new Discord.Client();
 client.login(process.env.DISCORD_TOKEN);
 
 //
 // init
+
 const app = express();
 const redis = new Redis(redisUrl);
+
+//
+// start app
 
 app.use(morgan('dev'));
 app.listen(port, () => {
@@ -77,7 +87,8 @@ app.post('/', upload.single('thumb'), async (req, res, next) => {
   // retrieve cached image
   let image = await redis.getBuffer(key);
 
-  console.debug(image);
+  console.debug(payload.Server);
+  console.debug(payload.Metadata);
 
   // save new image
   if (!image && req.file && req.file.buffer) {
