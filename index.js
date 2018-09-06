@@ -67,13 +67,11 @@ app.post('/', upload.single('thumb'), async (req, res, next) => {
   // retrieve cached image
   let image = await redis.getBuffer(key);
 
-  if (image) {
-    console.log('[REDIS]', `Using cached image ${key}`);
-  }
-
   // save new image
   if (isMediaPlay(payload.mediaEvent) || isMediaRate(payload.event)) {
-    if (!image && req.file && req.file.buffer) {
+    if (image) {
+      console.log('[REDIS]', `Using cached image ${key}`);
+    } else if (!image && req.file && req.file.buffer) {
       console.log('[REDIS]', `Saving new image ${key}`);
       image = await sharp(req.file.buffer)
         .resize(75, 75)
@@ -191,13 +189,16 @@ function notifySlack(imageUrl, payload, location, action) {
     const state = location.country_code === 'US' ? location.region_name : location.country_name;
     locationText = `near ${location.city}, ${state}`;
   }
+  
+  // DKTODO: temporary fix
+  const title = formatTitle(payload.Metadata);
 
   slack.webhook({
     channel,
     username: 'Plex',
     icon_emoji: ':plex:',
     attachments: [{
-      fallback: 'Required plain-text summary of the attachment.',
+      fallback: `${title} ${action} by ${payload.Account.title}`,
       color: '#a67a2d',
       title: formatTitle(payload.Metadata),
       text: formatSubtitle(payload.Metadata),
@@ -236,9 +237,10 @@ function isMediaRate(mediaEvent) {
 
 function getAction(mediaEvent) {
   let action = 'unkown';
+  
   switch (mediaEvent) {
     case MEDIA_PLAYING:
-      action = 'played';
+      action = 'playing';
       break;
     case MEDIA_PAUSED:
       action = 'paused';
