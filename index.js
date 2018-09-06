@@ -121,6 +121,7 @@ app.post('/', upload.single('thumb'), async (req, res, next) => {
 
   // post to discord
   if (postToDiscord) {
+    console.log('[DISCORD]', `Sending test-message`);
     discordClient.channels.get(discordChannel).send('Plex forever :-D');
   }
 
