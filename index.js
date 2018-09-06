@@ -53,8 +53,8 @@ slack.setWebhook(slackUrl);
 //
 // init discord
 
-const client = new Discord.Client();
-client.login(process.env.DISCORD_TOKEN);
+const discordClient = new Discord.Client();
+discordClient.login(process.env.DISCORD_TOKEN);
 
 //
 // init
@@ -87,9 +87,6 @@ app.post('/', upload.single('thumb'), async (req, res, next) => {
   // retrieve cached image
   let image = await redis.getBuffer(key);
 
-  console.debug(payload.Server);
-  console.debug(payload.Metadata);
-
   // save new image
   if (!image && req.file && req.file.buffer) {
     console.log('[REDIS]', `Saving new image ${key}`);
@@ -111,7 +108,7 @@ app.post('/', upload.single('thumb'), async (req, res, next) => {
       location = await getLocation(payload.Player.publicAddress);
     }
 
-    let action = getAction(payload);
+    const action = getAction(payload);
 
     if (image) {
       console.log('[SLACK]', `Sending ${key} with image`);
@@ -124,7 +121,7 @@ app.post('/', upload.single('thumb'), async (req, res, next) => {
 
   // post to discord
   if (postToDiscord) {
-    // DKTODO
+    discordClient.channels.get(discordChannel).send('Plex forever :-D');
   }
 
   res.sendStatus(200);
