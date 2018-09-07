@@ -85,11 +85,6 @@ app.post('/', upload.single('thumb'), async (req, res, next) => {
     return res.sendStatus(400);
   }
 
-  if (isMediaPause(payload.event) || isMediaResume(payload.event)) {
-    console.error('[APP]', `Event type is: "${payload.event}".  Will be not posted.`);
-    return res.sendStatus(300);
-  }
-
   // retrieve cached image
   let image = await redis.getBuffer(key);
 
