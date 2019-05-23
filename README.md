@@ -12,8 +12,20 @@ In order to run this app:
 
 You'll be asked to complete these config vars
 ```
-SLACK_URL      # your slack webhook URL
-SLACK_CHANNEL  # the slack #channel-name to post messages
-APP_URL        # the App URL ({app_name}.herokuapp.com)
-IPSTACK_KEY    # your ipstack API key
+APP_URL
+
+ANONYMIZE_USER_FOR_DISCORD
+ANONYMIZE_USER_FOR_SLACK
+
+DISCORD_CHANNEL_ID
+DISCORD_TOKEN
+
+SLACK_CHANNEL
+SLACK_URL
+
+POST_TO_DISCORD
+POST_TO_SLACK
+
+REDIS_URL
+IPSTACK_KEY
 ```
