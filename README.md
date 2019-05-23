@@ -16,6 +16,7 @@ In order to run this app:
 Alternatively, deploy straight to Heroku now:
 
 [![Deploy](https://www.herokucdn.com/deploy/button.svg)](https://heroku.com/deploy)
+
 You'll be asked to complete these config vars
 ```dotenv
 APP_URL                         # URL of this app
