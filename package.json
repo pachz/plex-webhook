@@ -1,6 +1,6 @@
 {
-  "name": "plex-webhook-slack",
-  "version": "0.0.1",
+  "name": "plex-webhook",
+  "version": "1.0.0",
   "private": true,
   "scripts": {
     "start": "node index.js"
