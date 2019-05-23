@@ -1,45 +1,51 @@
 {
   "name": "DK Plex Slack Webhooks",
   "description": "Use Plex webhooks to push media notifications into Slack & Discord",
-  "keywords": ["node", "redis"],
+  "keywords": [
+    "node",
+    "redis"
+  ],
   "repository": "https://github.com/driiftkiing/plex-webhook.git",
   "logo": "https://www.plex.tv/wp-content/themes/plex/img/plex-logo@2x.png",
   "addons": [
-    {"plan": "heroku-redis:hobby-dev"}
+    {
+      "plan": "heroku-redis:hobby-dev"
+    }
   ],
   "env": {
     "APP_URL": {
-      "description": "URL of this App ({app_name}.herokuapp.com)"
+      "description": "URL of this app"
     },
     "IPSTACK_KEY": {
-      "description": "ipstack.com API key"
+      "description": "API key from ipstack.com"
     },
     "REDIS_URL": {
-      "description": "The URL of redit (will be configured automatically)"
+      "description": "The URL of redis (will be configured automatically)",
+      "required": false
     },
     "SLACK_URL": {
-      "description": "Slack webhook URL"
+      "description": "URL of Slack WebHook"
     },
     "SLACK_CHANNEL": {
-      "description": "Slack #channel-name"
+      "description": "Channel name of Slack [#channel-name]"
     },
     "DISCORD_CHANNEL_ID": {
-      "description": "Discord Channel ID to send message"
+      "description": "Channel ID of Discord"
     },
     "DISCORD_TOKEN": {
-      "description": "Discord token to access discord server"
+      "description": "Token to access Discord"
     },
     "POST_TO_DISCORD": {
-      "description": "Add message to discord [boolean]"
+      "description": "Defines if the app can post to discord [bool]"
     },
     "POST_TO_SLACK": {
-      "description": "Add message to slack [boolean]"
+      "description": "Defines if the app can post to slack [bool]"
     },
     "ANONYMIZE_USER_FOR_DISCORD": {
-      "description": "Do not show the user-name of the plex user in discord"
+      "description": "Defines if the post should be anonymize the plex user-name [bool]"
     },
     "ANONYMIZE_USER_FOR_SLACK": {
-      "description": "Do not show the user-name of the plex user in slack"
+      "description": "Defines if the post should be anonymize the plex user-name [bool]"
     }
   }
 }
