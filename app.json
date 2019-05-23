@@ -1,24 +1,33 @@
 {
-  "name": "Plex Slack Webhooks",
+  "name": "DK Plex Slack Webhooks",
   "description": "Use Plex webhooks to push media notifications into Slack",
-  "repository": "https://github.com/plexinc/webhooks-slack",
+  "repository": "https://github.com/driiftkiing/plex-webhook-slack",
   "logo": "https://www.plex.tv/wp-content/themes/plex/img/plex-logo@2x.png",
   "keywords": ["node", "redis"],
   "addons": [
     {"plan": "heroku-redis:hobby-dev"}
   ],
   "env": {
+    "APP_URL": {
+      "description": "URL of this App ({app_name}.herokuapp.com)"
+    },
+    "IPSTACK_KEY": {
+      "description": "ipstack.com API key"
+    },
+    "REDIS_URL": {
+      "description": "The URL of redit (will be configured automatically)"
+    },
     "SLACK_URL": {
       "description": "Slack webhook URL"
     },
     "SLACK_CHANNEL": {
       "description": "Slack #channel-name"
     },
-    "APP_URL": {
-      "description": "URL of this App ({app_name}.herokuapp.com)"
+    "DISCORD_CHANNEL_ID": {
+      "description": "Discord Channel ID to send message"
     },
-    "IPSTACK_KEY": {
-      "description": "ipstack.com API key"
+    "DISCORD_TOKEN": {
+      "description": "Discord token to access discord server"
     }
   }
 }

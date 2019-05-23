@@ -7,27 +7,63 @@ const request = require('request-promise-native');
 const sha1 = require('sha1');
 const Slack = require('slack-node');
 const upload = multer({ storage: multer.memoryStorage() });
+const Discord = require('discord.js');
 
 const SEVEN_DAYS = 7 * 24 * 60 * 60; // in seconds
 
 //
-// setup
+// media naming
 
-const channel = process.env.SLACK_CHANNEL;
-const appURL = process.env.APP_URL;
-const redis = new Redis(process.env.REDIS_URL);
+const MEDIA_PLAYING = 'media.play';
+const MEDIA_PAUSED = 'media.pause';
+const MEDIA_RESUMED = 'media.resume';
+const MEDIA_STOPPED = 'media.stop';
+const MEDIA_VIEWED = 'media.scrobble';
+const MEDIA_RATED = 'media.rate';
 
 //
-// slack
+// app config
+
+const appURL = process.env.APP_URL;
+const port = process.env.PORT || 11000;
+const redisUrl = process.env.REDIS_URL;
+
+//
+// slack config
+
+const postToSlack = process.env.POST_TO_SLACK || false;
+const anonymizeUserForSlack = process.env.ANONYMIZE_USER_FOR_SLACK || true;
+const slackUrl = process.env.SLACK_URL;
+const slackChannel = process.env.SLACK_CHANNEL;
+
+//
+// discord config
+
+const postToDiscord = process.env.POST_TO_DISCORD || false;
+const anonymizeUserForDiscord = process.env.ANONYMIZE_USER_FOR_DISCORD || true;
+const discordChannel = process.env.DISCORD_CHANNEL_ID;
+const discordToken = process.env.DISCORD_TOKEN;
+
+//
+// init slack
 
 const slack = new Slack();
-slack.setWebhook(process.env.SLACK_URL);
+slack.setWebhook(slackUrl);
 
 //
-// express
+// init discord
+
+const discordClient = new Discord.Client();
+discordClient.login(process.env.DISCORD_TOKEN);
+
+//
+// init
 
 const app = express();
-const port = process.env.PORT || 11000;
+const redis = new Redis(redisUrl);
+
+//
+// start app
 
 app.use(morgan('dev'));
 app.listen(port, () => {
@@ -37,53 +73,50 @@ app.listen(port, () => {
 //
 // routes
 
-app.post('/', upload.single('thumb'), async(req, res, next) => {
-  const payload = JSON.parse(req.body.payload);
-  const isVideo = (payload.Metadata.librarySectionType === 'movie' || payload.Metadata.librarySectionType === 'show');
-  const isAudio = (payload.Metadata.librarySectionType === 'artist');
-  const key = sha1(payload.Server.uuid + payload.Metadata.ratingKey);
+app.post('/', upload.single('thumb'), async (req, res, next) => {
+  const payload = JSON.parse(req.body.payload); // DKTODO: create function for this
+  const isVideo = (payload.Metadata.librarySectionType === 'movie' || payload.Metadata.librarySectionType === 'show'); // DKTODO: create function for this
+  const isAudio = (payload.Metadata.librarySectionType === 'artist'); // DKTODO: create function for this
+  const key = sha1(payload.Server.uuid + payload.Metadata.ratingKey); // DKTODO: create function for this
 
   // missing required properties
-  if (!payload.user || !payload.Metadata || !(isAudio || isVideo)) {
+  if (!payload.Metadata || !(isAudio || isVideo)) {
+    console.error('[APP]', `missing required properties`);
     return res.sendStatus(400);
+  }
+
+  if (isMediaPause(payload.event) || isMediaStop(payload.event) || isMediaResume(payload.event)) {
+    console.error('[APP]', `Event type is: "${payload.event}".  Will be ignored.`);
+    return res.sendStatus(200);
   }
 
   // retrieve cached image
   let image = await redis.getBuffer(key);
 
   // save new image
-  if (payload.event === 'media.play' || payload.event === 'media.rate') {
-    if (image) {
-      console.log('[REDIS]', `Using cached image ${key}`);
-    } else if (!image && req.file && req.file.buffer) {
-      console.log('[REDIS]', `Saving new image ${key}`);
-      image = await sharp(req.file.buffer)
-        .resize(75, 75)
-        .background('white')
-        .embed()
-        .toBuffer();
+  if (!image && req.file && req.file.buffer) {
+    console.log('[REDIS]', `Saving new image ${key}`);
+    image = await sharp(req.file.buffer)
+      .resize(75, 75)
+      .background('white')
+      .embed()
+      .toBuffer();
 
-      redis.set(key, image, 'EX', SEVEN_DAYS);
-    }
+    redis.set(key, image, 'EX', SEVEN_DAYS);
+  } else {
+    console.log('[REDIS]', `Using cached image ${key}`);
   }
 
+  let location = '';
+
+  if (isVideo) {
+    location = await getLocation(payload.Player.publicAddress);
+  }
+
+  const action = getAction(payload);
+
   // post to slack
-  if ((payload.event === 'media.scrobble' && isVideo) || payload.event === 'media.rate') {
-    const location = await getLocation(payload.Player.publicAddress);
-
-    let action;
-
-    if (payload.event === 'media.scrobble') {
-      action = 'played';
-    } else if (payload.rating > 0) {
-      action = 'rated ';
-      for (var i = 0; i < payload.rating / 2; i++) {
-        action += ':star:';
-      }
-    } else {
-      action = 'unrated';
-    }
-
+  if (postToSlack) {
     if (image) {
       console.log('[SLACK]', `Sending ${key} with image`);
       notifySlack(appURL + '/images/' + key, payload, location, action);
@@ -93,11 +126,21 @@ app.post('/', upload.single('thumb'), async(req, res, next) => {
     }
   }
 
-  res.sendStatus(200);
+  // post to discord
+  if (postToDiscord) {
+    if (image) {
+      console.log('[DISCORD]', `Sending ${key} with image`);
+      notifyDiscord(appURL + '/images/' + key, payload, location, action);
+    } else {
+      console.log('[DISCORD]', `Sending ${key} without image`);
+      notifyDiscord(null, payload, location, action);
+    }
+  }
 
+  res.sendStatus(200);
 });
 
-app.get('/images/:key', async(req, res, next) => {
+app.get('/images/:key', async (req, res, next) => {
   const exists = await redis.exists(req.params.key);
 
   if (!exists) {
@@ -171,12 +214,15 @@ function notifySlack(imageUrl, payload, location, action) {
     locationText = `near ${location.city}, ${state}`;
   }
 
+  // DKTODO: temporary fix
+  const title = formatTitle(payload.Metadata);
+
   slack.webhook({
-    channel,
+    slackChannel,
     username: 'Plex',
     icon_emoji: ':plex:',
     attachments: [{
-      fallback: 'Required plain-text summary of the attachment.',
+      fallback: `${title} ${action} by ${payload.Account.title}`,
       color: '#a67a2d',
       title: formatTitle(payload.Metadata),
       text: formatSubtitle(payload.Metadata),
@@ -184,5 +230,89 @@ function notifySlack(imageUrl, payload, location, action) {
       footer: `${action} by ${payload.Account.title} on ${payload.Player.title} from ${payload.Server.title} ${locationText}`,
       footer_icon: payload.Account.thumb
     }]
-  }, () => {});
+  }, () => {
+  });
+}
+
+function notifyDiscord(imageUrl, payload, location, action) {
+  let locationText = '';
+
+  if (location) {
+    const state = location.country_code === 'US' ? location.region_name : location.country_name;
+    locationText = `near ${location.city}, ${state}`;
+  }
+
+  discordClient.channels.get(discordChannel).send({
+    embed: {
+      color: 3447003,
+      title: formatTitle(payload.Metadata),
+      description: formatSubtitle(payload.Metadata),
+      timestamp: new Date(),
+      footer: {
+        icon_url: 'https://dl2.macupdate.com/images/icons256/42311.png?d=1535042731',
+        text: `${action} from ${payload.Server.title} ${locationText}`
+      }
+    }
+  });
+}
+
+function isMediaPlay(mediaEvent) {
+  return mediaEvent === MEDIA_PLAYING;
+}
+
+function isMediaPause(mediaEvent) {
+  return mediaEvent === MEDIA_PAUSED;
+}
+
+function isMediaResume(mediaEvent) {
+  return mediaEvent === MEDIA_RESUMED;
+}
+
+function isMediaStop(mediaEvent) {
+  return mediaEvent === MEDIA_STOPPED;
+}
+
+function isMediaScrobble(mediaEvent) {
+  return mediaEvent === MEDIA_VIEWED;
+}
+
+// DKTODO: only showing "Season Nr."
+function isMediaRate(mediaEvent) {
+  return mediaEvent === MEDIA_RATED;
+}
+
+function getAction(payload) {
+  let action = 'unkown';
+
+  switch (payload.event) {
+    case MEDIA_PLAYING:
+      action = 'playing';
+      break;
+    case MEDIA_PAUSED:
+      action = 'paused';
+      break;
+    case MEDIA_RESUMED:
+      action = 'resumed';
+      break;
+    case MEDIA_STOPPED:
+      action = 'stopped';
+      break;
+    case MEDIA_VIEWED:
+      action = 'viewed';
+      break;
+    case MEDIA_RATED:
+      action = 'rated';
+
+      if (payload.rating > 0) {
+        action += ' ';
+        for (var i = 0; i < payload.rating / 2; i++) {
+          action += ':star:';
+        }
+      }
+      break;
+    default:
+      action = 'unkown';
+  }
+
+  return action;
 }
