@@ -2,6 +2,7 @@
   "name": "plex-webhook",
   "version": "1.0.0",
   "private": true,
+  "license": "unlicensed",
   "scripts": {
     "start": "node index.js"
   },
