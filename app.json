@@ -28,6 +28,18 @@
     },
     "DISCORD_TOKEN": {
       "description": "Discord token to access discord server"
+    },
+    "POST_TO_DISCORD": {
+      "description": "Add message to discord [boolean]"
+    },
+    "POST_TO_SLACK": {
+      "description": "Add message to slack [boolean]"
+    },
+    "ANONYMIZE_USER_FOR_DISCORD": {
+      "description": "Do not show the user-name of the plex user in discord"
+    },
+    "ANONYMIZE_USER_FOR_SLACK": {
+      "description": "Do not show the user-name of the plex user in slack"
     }
   }
 }
