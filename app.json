@@ -1,9 +1,9 @@
 {
   "name": "DK Plex Slack Webhooks",
-  "description": "Use Plex webhooks to push media notifications into Slack",
-  "repository": "https://github.com/driiftkiing/plex-webhook-slack",
-  "logo": "https://www.plex.tv/wp-content/themes/plex/img/plex-logo@2x.png",
+  "description": "Use Plex webhooks to push media notifications into Slack & Discord",
   "keywords": ["node", "redis"],
+  "repository": "https://github.com/driiftkiing/plex-webhook.git",
+  "logo": "https://www.plex.tv/wp-content/themes/plex/img/plex-logo@2x.png",
   "addons": [
     {"plan": "heroku-redis:hobby-dev"}
   ],

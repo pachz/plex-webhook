@@ -1,8 +1,11 @@
 {
   "name": "plex-webhook",
   "version": "1.0.0",
+  "description": "Use Plex webhooks to push media notifications into Slack & Discord",
   "private": true,
   "license": "unlicensed",
+  "author": "DRiiFTKiinG",
+  "repository": "https://github.com/driiftkiing/plex-webhook.git",
   "scripts": {
     "start": "node index.js"
   },
