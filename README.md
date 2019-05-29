@@ -1,4 +1,4 @@
-#plex-webhook
+# plex-webhook
 
 In order to run this app: 
 - Install [node.js](https://nodejs.org/en/).
