@@ -26,7 +26,7 @@ SLACK_URL                       # URL of Slack WebHook
 SLACK_CHANNEL                   # Channel name of Slack [#channel-name]
 DISCORD_CHANNEL_ID              # Channel ID of Discord
 DISCORD_TOKEN                   # Token to access Discord
-POST_TO_DISCORD                 # Defines if the app can post to discord [bool]]
+POST_TO_DISCORD                 # Defines if the app can post to discord [bool]
 POST_TO_SLACK                   # Defines if the app can post to slack [bool]
 ANONYMIZE_USER_FOR_DISCORD      # Defines if the post should be anonymize the plex user-name [bool]
 ANONYMIZE_USER_FOR_SLACK        # Defines if the post should be anonymize the plex user-name [bool]
