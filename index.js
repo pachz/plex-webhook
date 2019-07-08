@@ -109,7 +109,7 @@ app.post('/', upload.single('thumb'), async (req, res, next) => {
 
   let location = '';
 
-  if (isVideo) {
+  if (isVideo && payload.Player && payload.Player.publicAddress) {
     location = await getLocation(payload.Player.publicAddress);
   }
 
