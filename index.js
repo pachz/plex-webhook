@@ -32,7 +32,7 @@ const redisUrl = process.env.REDIS_URL;
 // slack config
 
 const postToSlack = process.env.POST_TO_SLACK || false;
-const anonymizeUserForSlack = process.env.ANONYMIZE_USER_FOR_SLACK || true;
+const anonymizeUserForSlack = process.env.ANONYMIZE_USER_FOR_SLACK || true; // DKTODO: use config
 const slackUrl = process.env.SLACK_URL;
 const slackChannel = process.env.SLACK_CHANNEL;
 
@@ -40,7 +40,7 @@ const slackChannel = process.env.SLACK_CHANNEL;
 // discord config
 
 const postToDiscord = process.env.POST_TO_DISCORD || false;
-const anonymizeUserForDiscord = process.env.ANONYMIZE_USER_FOR_DISCORD || true;
+const anonymizeUserForDiscord = process.env.ANONYMIZE_USER_FOR_DISCORD || true; // DKTODO: use config
 const discordChannel = process.env.DISCORD_CHANNEL_ID;
 const discordToken = process.env.DISCORD_TOKEN;
 
@@ -54,7 +54,7 @@ slack.setWebhook(slackUrl);
 // init discord
 
 const discordClient = new Discord.Client();
-discordClient.login(process.env.DISCORD_TOKEN);
+discordClient.login(discordToken);
 
 //
 // init
@@ -75,6 +75,7 @@ app.listen(port, () => {
 
 app.post('/', upload.single('thumb'), async (req, res, next) => {
   const payload = JSON.parse(req.body.payload); // DKTODO: create function for this
+
   const isVideo = (payload.Metadata.librarySectionType === 'movie' || payload.Metadata.librarySectionType === 'show'); // DKTODO: create function for this
   const isAudio = (payload.Metadata.librarySectionType === 'artist'); // DKTODO: create function for this
   const key = sha1(payload.Server.uuid + payload.Metadata.ratingKey); // DKTODO: create function for this
@@ -175,13 +176,15 @@ function getLocation(ip) {
 function formatTitle(metadata) {
   if (metadata.grandparentTitle) {
     return metadata.grandparentTitle;
-  } else {
+  }
+
     let ret = metadata.title;
+
     if (metadata.year) {
       ret += ` (${metadata.year})`;
     }
+
     return ret;
-  }
 }
 
 function formatSubtitle(metadata) {
