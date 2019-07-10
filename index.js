@@ -101,7 +101,7 @@ app.post('/', upload.single('thumb'), async (req, res, next) => {
     if (!payload.Metadata || !(isMusic || isVideo)) {
         console.error('[APP]', `Missing required properties`);
 
-        // DKTODO: temporary loggint to slack
+        // DKTODO: temporary logging to slack
         slack.webhook(
             {
                 slackChannel,
