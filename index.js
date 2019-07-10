@@ -8,6 +8,7 @@ const sha1 = require('sha1');
 const Slack = require('slack-node');
 const upload = multer({storage: multer.memoryStorage()});
 const Discord = require('discord.js');
+const http = require('http');
 
 const SEVEN_DAYS = 7 * 24 * 60 * 60; // in seconds
 
@@ -210,6 +211,11 @@ app.use((err, req, res, next) => {
     res.status(err.status || 500);
     res.send(err.message);
 });
+
+//
+// do not let app sleep
+
+setInterval(() => http.get(appURL), 300000);
 
 //
 // helpers
