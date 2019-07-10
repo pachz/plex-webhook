@@ -91,13 +91,13 @@ app.listen(port, () => console.log(`Express app running at http://localhost:${po
 // main route
 
 app.post('/', upload.single('thumb'), async (req, res, next) => {
-    console.debug(req.body);
-
     const payload = JSON.parse(req.body.payload);
 
     const isVideo = isLibrarySectionTypeVideo(payload);
     const isMusic = isLibrarySectionTypeMusic(payload);
     const key = generateImageKey(payload);
+
+    console.debug('DEBUG', isVideo, isMusic, key);
 
     // missing required properties
     if (!payload.Metadata || !(isMusic || isVideo)) {
