@@ -97,8 +97,6 @@ app.post('/', upload.single('thumb'), async (req, res, next) => {
     const isMusic = isLibrarySectionTypeMusic(payload);
     const key = generateImageKey(payload);
 
-    console.debug('DEBUG', isVideo, isMusic, key);
-
     // missing required properties
     if (!payload.Metadata || !(isMusic || isVideo)) {
         console.error('[APP]', `Missing required properties`);
@@ -419,7 +417,7 @@ function isLibrarySectionTypeMusic(payload) {
 }
 
 function generateImageKey(payload) {
-    sha1(payload.Server.uuid + payload.Metadata.ratingKey);
+    return sha1(payload.Server.uuid + payload.Metadata.ratingKey);
 }
 
 function generateErrorResponse(statusCode, message) {
