@@ -91,6 +91,8 @@ app.listen(port, () => console.log(`Express app running at http://localhost:${po
 // main route
 
 app.post('/', upload.single('thumb'), async (req, res, next) => {
+    console.debug(req);
+
     const payload = JSON.parse(req.body.payload);
 
     const isVideo = isVideo(payload);
