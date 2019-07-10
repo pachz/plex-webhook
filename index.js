@@ -95,8 +95,8 @@ app.post('/', upload.single('thumb'), async (req, res, next) => {
 
     const payload = JSON.parse(req.body.payload);
 
-    const isVideo = isVideo(payload);
-    const isMusic = isMusic(payload);
+    const isVideo = isLibrarySectionTypeVideo(payload);
+    const isMusic = isLibrarySectionTypeMusic(payload);
     const key = generateImageKey(payload);
 
     // missing required properties
@@ -410,11 +410,11 @@ function getValueForMediaRated(payload) {
     return ratedAction;
 }
 
-function isVideo(payload) {
+function isLibrarySectionTypeVideo(payload) {
     return payload.Metadata.librarySectionType === 'movie' || payload.Metadata.librarySectionType === 'show';
 }
 
-function isMusic(payload) {
+function isLibrarySectionTypeMusic(payload) {
     return payload.Metadata.librarySectionType === 'artist';
 }
 
