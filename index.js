@@ -126,6 +126,32 @@ app.post('/', upload.single('thumb'), async (req, res, next) => {
         return res.json(createMessage(200, 'OK'));
     }
 
+    if (
+        isNewMediaAdded(payload.event) || isNewMediaAddedOnDeck(payload.event)
+        || isNewDeviceAdded(payload.event)
+        || isDatabaseBackupCompleted(payload.event) || isDatabaseCorrupted(payload.event)
+    ) {
+        console.warn('[APP]', `Event type is: "${payload.event}".  Will be ignored.`);
+
+        // DKTODO: temporary logging to slack
+        slack.webhook(
+            {
+                slackChannel,
+                username: 'Plex',
+                icon_emoji: ':plex:',
+                attachments: [{
+                    color: '#a67a2d',
+                    title: 'Debugging',
+                    text: req.body.payload
+                }]
+            },
+            () => null
+        );
+
+        return res.json(createMessage(200, 'OK'));
+    }
+
+
     // retrieve cached image
     let image = await redis.getBuffer(key);
 
@@ -164,16 +190,6 @@ app.post('/', upload.single('thumb'), async (req, res, next) => {
 
     // post to discord
     if (postToDiscord) {
-        if (
-            isNewMediaAdded(payload.event) || isNewMediaAddedOnDeck(payload.event)
-            || isNewDeviceAdded(payload.event)
-            || isDatabaseBackupCompleted(payload.event) || isDatabaseCorrupted(payload.event)
-        ) {
-            console.warn('[APP]', `Event type is: "${payload.event}".  Will be ignored for discord.`);
-
-            return res.json(createMessage(200, 'OK'));
-        }
-
         if (image) {
             console.log('[DISCORD]', `Sending ${key} with image`);
             notifyDiscord(appURL + '/images/' + key, payload, location, action);
