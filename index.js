@@ -117,12 +117,14 @@ app.post('/', upload.single('thumb'), async (req, res, next) => {
             () => null
         );
 
-        return res.sendStatus(400);
+        next(createErrorMessage(400, 'Bad Request'));
+        return;
     }
 
     if (isMediaPause(payload.event) || isMediaStop(payload.event) || isMediaResume(payload.event) || isPlaybackStarted(payload.event)) {
-        console.error('[APP]', `Event type is: "${payload.event}".  Will be ignored.`);
-        return res.sendStatus(200);
+        console.warn('[APP]', `Event type is: "${payload.event}".  Will be ignored.`);
+
+        return res.json(createMessage(200, 'OK'));
     }
 
     if (
@@ -130,8 +132,9 @@ app.post('/', upload.single('thumb'), async (req, res, next) => {
         || isNewDeviceAdded(payload.event)
         || isDatabaseBackupCompleted(payload.event) || isDatabaseCorrupted(payload.event)
     ) {
-        console.error('[APP]', `Event type is: "${payload.event}".  Will be ignored for discord.`);
-        return res.sendStatus(200);
+        console.warn('[APP]', `Event type is: "${payload.event}".  Will be ignored for discord.`);
+
+        return res.json(createMessage(200, 'OK'));
     }
 
     // retrieve cached image
@@ -181,7 +184,7 @@ app.post('/', upload.single('thumb'), async (req, res, next) => {
         }
     }
 
-    res.sendStatus(200);
+    return res.json(createMessage(200, 'OK'));
 });
 
 //
@@ -202,14 +205,13 @@ app.get('/images/:key', async (req, res, next) => {
 // error handlers
 
 app.use((req, res, next) => {
-    const err = new Error('Not Found');
-    err.status = 404;
-    next(err);
+    next(createErrorMessage(404, 'Not Found'));
 });
 
 app.use((err, req, res, next) => {
-    res.status(err.status || 500);
-    res.send(err.message);
+    const statusCode = err.status || 500;
+    res.status(statusCode);
+    res.json(generateErrorResponse(statusCode, err.message));
 });
 
 //
@@ -410,4 +412,26 @@ function isMusic(payload) {
 
 function generateImageKey(payload) {
     sha1(payload.Server.uuid + payload.Metadata.ratingKey);
+}
+
+function generateErrorResponse(statusCode, message) {
+    return {
+        errors: [
+            {
+                status: statusCode,
+                message: message,
+            }
+        ]
+    };
+}
+
+function createErrorMessage(statusCode, message) {
+    const err = new Error(message);
+    err.status = statusCode;
+
+    return err;
+}
+
+function createMessage(statusCode, message) {
+    return {status: response.status, message: response.statusText};
 }
