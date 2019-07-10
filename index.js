@@ -8,7 +8,6 @@ const sha1 = require('sha1');
 const Slack = require('slack-node');
 const upload = multer({storage: multer.memoryStorage()});
 const Discord = require('discord.js');
-const http = require('http');
 
 const SEVEN_DAYS = 7 * 24 * 60 * 60; // in seconds
 
@@ -202,6 +201,13 @@ app.get('/images/:key', async (req, res, next) => {
 });
 
 //
+// ping route
+
+app.get('/ping', async (req, res, next) => {
+    return res.json(createMessage(200, 'OK'));
+});
+
+//
 // error handlers
 
 app.use((req, res, next) => {
@@ -217,7 +223,7 @@ app.use((err, req, res, next) => {
 //
 // do not let app sleep
 
-setInterval(() => http.get(appURL), 300000);
+setInterval(() => request.get(`${appURL}/ping`), 300000);
 
 //
 // helpers
