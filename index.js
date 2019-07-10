@@ -439,5 +439,5 @@ function createErrorMessage(statusCode, message) {
 }
 
 function createMessage(statusCode, message) {
-    return {status: response.status, message: response.statusText};
+    return {status: statusCode, message: message};
 }
