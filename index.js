@@ -285,7 +285,7 @@ function isMediaRate(mediaEvent) {
 }
 
 function getAction(payload) {
-  let action = 'unkown';
+  let action = '';
 
   switch (payload.event) {
     case MEDIA_PLAYING:
@@ -314,7 +314,8 @@ function getAction(payload) {
       }
       break;
     default:
-      action = 'unkown';
+      action = 'unknown';
+      console.error(`Unknown event: "${payload.event}"`)
   }
 
   return action;
