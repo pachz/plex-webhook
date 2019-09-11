@@ -133,21 +133,6 @@ app.post('/', upload.single('thumb'), async (req, res, next) => {
     ) {
         console.warn('[APP]', `Event type is: "${payload.event}".  Will be ignored.`);
 
-        // DKTODO: temporary logging to slack
-        slack.webhook(
-            {
-                slackChannel,
-                username: 'Plex',
-                icon_emoji: ':plex:',
-                attachments: [{
-                    color: '#a67a2d',
-                    title: 'Debugging',
-                    text: req.body.payload
-                }]
-            },
-            () => null
-        );
-
         return res.json(createMessage(200, 'OK'));
     }
 
