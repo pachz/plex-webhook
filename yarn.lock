@@ -200,7 +200,7 @@ buffer-from@^1.0.0:
   version "1.1.1"
   resolved "https://registry.yarnpkg.com/buffer-from/-/buffer-from-1.1.1.tgz#32713bc028f75c02fdb710d7c7bcec1f2c6070ef"
 
-bufferutil@~3.0.3:
+bufferutil@~3.0.0:
   version "3.0.5"
   resolved "https://registry.yarnpkg.com/bufferutil/-/bufferutil-3.0.5.tgz#8abfc3b6da7aca6a13268b3f2482f0c7aa05fffb"
   integrity sha512-0fUEthLqfCkYspEuP0vmiAe+PsXslE+AlILb2rmS9I4tAdm3SmpCI69M66zQL20GQEszdbXyVN6q+cpG/yhYlg==
@@ -467,7 +467,7 @@ dicer@0.2.5:
     readable-stream "1.1.x"
     streamsearch "0.1.2"
 
-discord.js@~11.4.2:
+discord.js@~11.4.0:
   version "11.4.2"
   resolved "https://registry.yarnpkg.com/discord.js/-/discord.js-11.4.2.tgz#54586981926521572051f2a30b984aad2b49786e"
   integrity sha512-MDwpu0lMFTjqomijDl1Ed9miMQe6kB4ifKdP28QZllmLv/HVOJXhatRgjS8urp/wBlOfx+qAYSXcdI5cKGYsfg==
@@ -1277,7 +1277,7 @@ minimist@^1.2.0:
   dependencies:
     minimist "0.0.8"
 
-morgan@~1.8.1:
+morgan@~1.8.0:
   version "1.8.2"
   resolved "https://registry.yarnpkg.com/morgan/-/morgan-1.8.2.tgz#784ac7734e4a453a9c6e6e8680a9329275c8b687"
   integrity sha1-eErHc05KRTqcbm6GgKkyknXItoc=
@@ -1302,7 +1302,7 @@ ms@2.0.0:
   version "2.0.0"
   resolved "https://registry.yarnpkg.com/ms/-/ms-2.0.0.tgz#5608aeadfc00be6c2901df5f9861788de0d597c8"
 
-multer@~1.2.1:
+multer@~1.2.0:
   version "1.2.1"
   resolved "https://registry.yarnpkg.com/multer/-/multer-1.2.1.tgz#759959c6c19f7fb03d0239f1df0b1ecec88473a3"
   integrity sha1-dZlZxsGff7A9Ajnx3wsezsiEc6M=
@@ -1629,7 +1629,7 @@ request-promise-core@1.1.2:
   dependencies:
     lodash "^4.17.11"
 
-request-promise-native@~1.0.5:
+request-promise-native@~1.0.0:
   version "1.0.7"
   resolved "https://registry.yarnpkg.com/request-promise-native/-/request-promise-native-1.0.7.tgz#a49868a624bdea5069f1251d0a836e0d89aa2c59"
   integrity sha512-rIMnbBdgNViL37nZ1b3L/VfPOpSi0TqVDQPAvO6U14lMzOLrt5nilxCQqtDKhZeDiW0/hkCXGoQjhgJd/tCh6w==
@@ -1795,7 +1795,7 @@ setprototypeof@1.0.2:
   resolved "https://registry.yarnpkg.com/setprototypeof/-/setprototypeof-1.0.2.tgz#81a552141ec104b88e89ce383103ad5c66564d08"
   integrity sha1-gaVSFB7BBLiOic44MQOtXGZWTQg=
 
-sha1@~1.1.1:
+sha1@~1.1.0:
   version "1.1.1"
   resolved "https://registry.yarnpkg.com/sha1/-/sha1-1.1.1.tgz#addaa7a93168f393f19eb2b15091618e2700f848"
   integrity sha1-rdqnqTFo85PxnrKxUJFhjicA+Eg=
@@ -1803,7 +1803,7 @@ sha1@~1.1.1:
     charenc ">= 0.0.1"
     crypt ">= 0.0.1"
 
-sharp@~0.17.3:
+sharp@~0.17.0:
   version "0.17.3"
   resolved "https://registry.yarnpkg.com/sharp/-/sharp-0.17.3.tgz#484cd2a70c900370948dcc43e165f78306bff48a"
   integrity sha1-SEzSpwyQA3CUjcxD4WX3gwa/9Io=
@@ -1845,7 +1845,7 @@ simple-swizzle@^0.2.2:
   dependencies:
     is-arrayish "^0.3.1"
 
-slack-node@~0.1.8:
+slack-node@~0.1.0:
   version "0.1.8"
   resolved "https://registry.yarnpkg.com/slack-node/-/slack-node-0.1.8.tgz#cda98de8681485b301dc6742ddc3897117fad349"
   integrity sha1-zamN6GgUhbMB3GdC3cOJcRf600k=
