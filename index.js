@@ -40,7 +40,7 @@ app.listen(port, () => {
 
 app.post('/', upload.single('thumb'), async (req, res, next) => {
   const payload = JSON.parse(req.body.payload);
-
+  console.log(payload);
   const isVideo = (['movie', 'episode'].includes(payload.Metadata.type));
   const isAudio = (payload.Metadata.type === 'track');
   const key = sha1(payload.Server.uuid + payload.Metadata.ratingKey);
@@ -86,7 +86,6 @@ app.post('/', upload.single('thumb'), async (req, res, next) => {
 
   // post to slack
   if ((payload.event === 'media.scrobble' && isVideo) || payload.event === 'media.rate') {
-    const location = await getLocation(payload.Player.publicAddress);
 
     let action;
 
@@ -103,10 +102,10 @@ app.post('/', upload.single('thumb'), async (req, res, next) => {
 
     if (image) {
       console.log('[SLACK]', `Sending ${key} with image`);
-      notifySlack(appURL + '/images/' + key, payload, location, action);
+      notifySlack(appURL + '/images/' + key, payload, action);
     } else {
       console.log('[SLACK]', `Sending ${key} without image`);
-      notifySlack(null, payload, location, action);
+      notifySlack(null, payload, action);
     }
   }
 
@@ -142,9 +141,6 @@ app.use((err, req, res, next) => {
 //
 // helpers
 
-function getLocation(ip) {
-  return request.get(`http://api.ipstack.com/${ip}?access_key=${process.env.IPSTACK_KEY}`, { json: true });
-}
 
 function formatTitle(metadata) {
   if (metadata.grandparentTitle) {
