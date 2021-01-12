@@ -1,3 +1,4 @@
+const TelegramBot = require('node-telegram-bot-api');
 const express = require('express');
 const sharp = require('sharp');
 const morgan = require('morgan');
@@ -17,9 +18,11 @@ const appURL = process.env.APP_URL;
 const redis = new Redis(process.env.REDIS_URL);
 const TOKEN = process.env.T_TOKEN || 'XXX';
 
-const TelegramBot = require('node-telegram-bot-api');
-
 const bot = new TelegramBot(TOKEN, { polling: true });
+
+const channelId = '-1001304838206';
+
+bot.sendMessage(channelId, 'kk');
 
 // Matches "/echo [whatever]"
 bot.onText(/\/echo (.+)/, (msg, match) => {
@@ -43,6 +46,7 @@ bot.on('message', (msg) => {
   bot.sendMessage(chatId, 'Received your message');
   console.log(msg);
 });
+
 
 const slack = {};
 
