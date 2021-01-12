@@ -1,51 +1,24 @@
 {
-  "name": "DK Plex Slack Webhooks",
-  "description": "Use Plex webhooks to push media notifications into Slack & Discord",
-  "keywords": [
-    "node",
-    "redis"
-  ],
-  "repository": "https://github.com/driiftkiing/plex-webhook.git",
+  "name": "Plex Slack Webhooks",
+  "description": "Use Plex webhooks to push media notifications into Slack",
+  "repository": "https://github.com/plexinc/webhooks-slack",
   "logo": "https://www.plex.tv/wp-content/themes/plex/img/plex-logo@2x.png",
+  "keywords": ["node", "redis"],
   "addons": [
-    {
-      "plan": "heroku-redis:hobby-dev"
-    }
+    {"plan": "heroku-redis:hobby-dev"}
   ],
   "env": {
-    "APP_URL": {
-      "description": "URL of this app"
-    },
-    "IPSTACK_KEY": {
-      "description": "API key from ipstack.com"
-    },
-    "REDIS_URL": {
-      "description": "The URL of redis (will be configured automatically)",
-      "required": false
-    },
     "SLACK_URL": {
-      "description": "URL of Slack WebHook"
+      "description": "Slack webhook URL"
     },
     "SLACK_CHANNEL": {
-      "description": "Channel name of Slack [#channel-name]"
+      "description": "Slack #channel-name"
     },
-    "DISCORD_CHANNEL_ID": {
-      "description": "Channel ID of Discord"
+    "APP_URL": {
+      "description": "URL of this App ({app_name}.herokuapp.com)"
     },
-    "DISCORD_TOKEN": {
-      "description": "Token to access Discord"
-    },
-    "POST_TO_DISCORD": {
-      "description": "Defines if the app can post to discord [bool]"
-    },
-    "POST_TO_SLACK": {
-      "description": "Defines if the app can post to slack [bool]"
-    },
-    "ANONYMIZE_USER_FOR_DISCORD": {
-      "description": "Defines if the post should be anonymize the plex user-name [bool]"
-    },
-    "ANONYMIZE_USER_FOR_SLACK": {
-      "description": "Defines if the post should be anonymize the plex user-name [bool]"
+    "IPSTACK_KEY": {
+      "description": "ipstack.com API key"
     }
   }
 }

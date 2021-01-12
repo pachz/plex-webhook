@@ -1,31 +1,29 @@
 {
-  "name": "plex-webhook",
-  "version": "0.0.0",
-  "description": "Use Plex webhooks to push media notifications into Slack & Discord",
+  "name": "plex-notifications",
+  "version": "0.0.2",
   "private": true,
-  "license": "unlicensed",
-  "author": "DRiiFTKiinG",
-  "repository": "https://github.com/driiftkiing/plex-webhook.git",
   "scripts": {
-    "start": "node index.js"
+    "start": "node index.js",
+    "debug": "nodemon index.js",
+    "lint": "eslint ."
   },
   "engines": {
-    "node": "8.11"
+    "node": "^10"
   },
+  "engineStrict" : true,
   "dependencies": {
-    "discord.js": "~11.4.0",
-    "express": "~4.14.0",
-    "ioredis": "~2.5.0",
-    "morgan": "~1.8.0",
-    "multer": "~1.2.0",
-    "request": "~2.87.0",
-    "request-promise-native": "~1.0.0",
-    "sha1": "~1.1.0",
-    "sharp": "~0.17.0",
-    "slack-node": "~0.1.0"
+    "express": "^4.17.1",
+    "ioredis": "^4.14.0",
+    "morgan": "^1.8.1",
+    "multer": "^1.4.2",
+    "request": "^2.87.0",
+    "request-promise-native": "^1.0.7",
+    "sha1": "^1.1.1",
+    "sharp": "^0.23.0",
+    "slack-node": "^0.1.8"
   },
   "devDependencies": {
-    "bufferutil": "~3.0.0",
-    "eslint": "~3.19.0"
+    "eslint": "^6.2.2",
+    "nodemon": "^1.19.1"
   }
 }
