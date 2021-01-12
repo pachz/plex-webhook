@@ -188,11 +188,15 @@ function notifyTelegram(imageUrl, payload, action) {
   ${formatSubtitle(payload.Metadata)}`;
 
   
+  const opts = {
+    caption: message,
+    parse_mode: 'HTML'
+  };
 
   if(imageUrl){
-    bot.sendPhoto(channelId, imageUrl);
-    bot.sendMessage(channelId, message);
+    bot.sendPhoto(channelId, imageUrl, opts);
+    bot.sendMessage(channelId, message, opts);
   } else {
-    bot.sendMessage(channelId, message);
+    bot.sendMessage(channelId, message, opts);
   }
 }
