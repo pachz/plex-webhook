@@ -54,7 +54,7 @@ app.post('/', upload.single('thumb'), async (req, res, next) => {
   let image = await redis.getBuffer(key);
 
   // save new image
-  if (payload.event === 'media.play' || payload.event === 'media.rate') {
+  if (payload.event === 'library.new') {
     if (image) {
       console.log('[REDIS]', `Using cached image ${key}`);
     } else {
@@ -70,12 +70,12 @@ app.post('/', upload.single('thumb'), async (req, res, next) => {
       }
       if (buffer) {
         image = await sharp(buffer)
-          .resize({
-            height: 75,
-            width: 75,
-            fit: 'contain',
-            background: 'white'
-          })
+          // .resize({
+          //   height: 75,
+          //   width: 75,
+          //   fit: 'contain',
+          //   background: 'white'
+          // })
           .toBuffer();
 
         console.log('[REDIS]', `Saving new image ${key}`);
@@ -84,29 +84,12 @@ app.post('/', upload.single('thumb'), async (req, res, next) => {
     }
   }
 
-  // post to slack
-  if ((payload.event === 'media.scrobble' && isVideo) || payload.event === 'media.rate') {
-
-    let action;
-
-    if (payload.event === 'media.scrobble') {
-      action = 'played';
-    } else if (payload.rating > 0) {
-      action = 'rated ';
-      for (var i = 0; i < payload.rating / 2; i++) {
-        action += ':star:';
-      }
-    } else {
-      action = 'unrated';
-    }
-
-    if (image) {
-      console.log('[SLACK]', `Sending ${key} with image`);
-      notifySlack(appURL + '/images/' + key, payload, action);
-    } else {
-      console.log('[SLACK]', `Sending ${key} without image`);
-      notifySlack(null, payload, action);
-    }
+  if (image) {
+    console.log('[SLACK]', `Sending ${key} with image`);
+    // notifySlack(appURL + '/images/' + key, payload, action);
+  } else {
+    console.log('[SLACK]', `Sending ${key} without image`);
+    // notifySlack(null, payload, action);
   }
 
   res.sendStatus(200);
