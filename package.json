@@ -10,12 +10,13 @@
   "engines": {
     "node": "^10"
   },
-  "engineStrict" : true,
+  "engineStrict": true,
   "dependencies": {
     "express": "^4.17.1",
     "ioredis": "^4.14.0",
     "morgan": "^1.8.1",
     "multer": "^1.4.2",
+    "node-telegram-bot-api": "^0.51.0",
     "request": "^2.87.0",
     "request-promise-native": "^1.0.7",
     "sha1": "^1.1.1",
