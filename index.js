@@ -126,6 +126,7 @@ app.get('/images/:key', async (req, res, next) => {
     return next();
   }
 
+  res.set('Content-Type', 'image/jpeg');
   const image = await redis.getBuffer(req.params.key);
   sharp(image).jpeg().pipe(res);
 });
