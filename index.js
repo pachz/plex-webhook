@@ -22,8 +22,6 @@ const bot = new TelegramBot(TOKEN, { polling: true });
 
 const channelId = '-1001304838206';
 
-bot.sendMessage(channelId, 'kk');
-
 // Matches "/echo [whatever]"
 bot.onText(/\/echo (.+)/, (msg, match) => {
   // 'msg' is the received Message from Telegram
@@ -111,10 +109,10 @@ app.post('/', upload.single('thumb'), async (req, res, next) => {
 
   if (image) {
     console.log('[SLACK]', `Sending ${key} with image`);
-    // notifySlack(appURL + '/images/' + key, payload, action);
+    notifyTelegram(appURL + '/images/' + key, payload, action);
   } else {
     console.log('[SLACK]', `Sending ${key} without image`);
-    // notifySlack(null, payload, action);
+    notifyTelegram(null, payload, action);
   }
 
   res.sendStatus(200);
@@ -183,12 +181,18 @@ function formatSubtitle(metadata) {
   return ret;
 }
 
-function notifySlack(imageUrl, payload, location, action) {
-  let locationText = '';
+function notifyTelegram(imageUrl, payload, action) {
 
-  if (location) {
-    const state = location.country_code === 'US' ? location.region_name : location.country_name;
-    locationText = `near ${location.city}, ${state}`;
+  const message = `<strong>${formatTitle(payload.Metadata)}</strong>
+  ${formatSubtitle(payload.Metadata)}`;
+
+  
+
+  if(imageUrl){
+    bot.sendPhoto(channelId, imageUrl);
+    bot.sendMessage(channelId, message);
+  } else {
+    bot.sendMessage(channelId, message);
   }
 
   slack.webhook({
