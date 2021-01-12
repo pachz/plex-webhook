@@ -5,7 +5,7 @@ const multer = require('multer');
 const Redis = require('ioredis');
 const request = require('request-promise-native');
 const sha1 = require('sha1');
-const Slack = require('slack-node');
+// const Slack = require('slack-node');
 const upload = multer({ storage: multer.memoryStorage() });
 
 const SEVEN_DAYS = 7 * 24 * 60 * 60; // in seconds
@@ -19,8 +19,8 @@ const redis = new Redis(process.env.REDIS_URL);
 //
 // slack
 
-//const slack = new Slack();
-//slack.setWebhook(process.env.SLACK_URL);
+// const slack = new Slack();
+// slack.setWebhook(process.env.SLACK_URL);
 
 const slack = {};
 
@@ -141,7 +141,6 @@ app.use((err, req, res, next) => {
 //
 // helpers
 
-
 function formatTitle(metadata) {
   if (metadata.grandparentTitle) {
     return metadata.grandparentTitle;
@@ -185,7 +184,6 @@ function notifySlack(imageUrl, payload, location, action) {
   }
 
   slack.webhook({
-    channel,
     username: 'Plex',
     icon_emoji: ':plex:',
     attachments: [{
