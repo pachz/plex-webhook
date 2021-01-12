@@ -47,7 +47,6 @@ bot.on('message', (msg) => {
   console.log(msg);
 });
 
-
 const slack = {};
 
 //
