@@ -109,10 +109,10 @@ app.post('/', upload.single('thumb'), async (req, res, next) => {
 
   if (image) {
     console.log('[SLACK]', `Sending ${key} with image`);
-    notifyTelegram(appURL + '/images/' + key, payload, action);
+    notifyTelegram(appURL + '/images/' + key, payload);
   } else {
     console.log('[SLACK]', `Sending ${key} without image`);
-    notifyTelegram(null, payload, action);
+    notifyTelegram(null, payload);
   }
 
   res.sendStatus(200);
@@ -194,18 +194,4 @@ function notifyTelegram(imageUrl, payload, action) {
   } else {
     bot.sendMessage(channelId, message);
   }
-
-  slack.webhook({
-    username: 'Plex',
-    icon_emoji: ':plex:',
-    attachments: [{
-      fallback: 'Required plain-text summary of the attachment.',
-      color: '#a67a2d',
-      title: formatTitle(payload.Metadata),
-      text: formatSubtitle(payload.Metadata),
-      thumb_url: imageUrl,
-      footer: `${action} by ${payload.Account.title} on ${payload.Player.title} from ${payload.Server.title} ${locationText}`,
-      footer_icon: payload.Account.thumb
-    }]
-  }, () => {});
 }
