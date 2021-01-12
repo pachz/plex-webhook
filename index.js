@@ -105,14 +105,14 @@ app.post('/', upload.single('thumb'), async (req, res, next) => {
         redis.set(key, image, 'EX', SEVEN_DAYS);
       }
     }
-  }
 
-  if (image) {
-    console.log('[SLACK]', `Sending ${key} with image`);
-    notifyTelegram(appURL + '/images/' + key, payload);
-  } else {
-    console.log('[SLACK]', `Sending ${key} without image`);
-    notifyTelegram(null, payload);
+    if (image) {
+      console.log('[SLACK]', `Sending ${key} with image`);
+      notifyTelegram(appURL + '/images/' + key, payload);
+    } else {
+      console.log('[SLACK]', `Sending ${key} without image`);
+      notifyTelegram(null, payload);
+    }
   }
 
   res.sendStatus(200);
