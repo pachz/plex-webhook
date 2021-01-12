@@ -17,6 +17,7 @@ const SEVEN_DAYS = 7 * 24 * 60 * 60; // in seconds
 const appURL = process.env.APP_URL;
 const redis = new Redis(process.env.REDIS_URL);
 const TOKEN = process.env.T_TOKEN || 'XXX';
+const PLEX_TOKEN = process.env.PLEX_TOKEN || 'XXX';
 
 const bot = new TelegramBot(TOKEN, { polling: true });
 
@@ -84,10 +85,11 @@ app.post('/', upload.single('thumb'), async (req, res, next) => {
       let buffer;
       if (req.file && req.file.buffer) {
         buffer = req.file.buffer;
-      } else if (payload.thumb) {
-        console.log('[REDIS]', `Retrieving image from  ${payload.thumb}`);
+      } 
+      if (payload.Metadata.thumb) {
+        console.log('[REDIS]', `Retrieving image from  ${payload.Metadata.thumb}`);
         buffer = await request.get({
-          uri: payload.thumb,
+          uri: `http://plex.neil.pach.one${payload.Metadata.thumb}?X-Plex-Token=${PLEX_TOKEN}`,
           encoding: null
         });
       }
