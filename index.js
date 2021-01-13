@@ -65,7 +65,7 @@ app.listen(port, () => {
 app.post('/', upload.single('thumb'), async (req, res, next) => {
   const payload = JSON.parse(req.body.payload);
   console.log(payload);
-  const isVideo = (['movie', 'episode'].includes(payload.Metadata.type));
+  const isVideo = (['movie', 'episode', 'show'].includes(payload.Metadata.type));
   const isAudio = (payload.Metadata.type === 'track');
   const key = sha1(payload.Server.uuid + payload.Metadata.ratingKey);
 
@@ -86,10 +86,10 @@ app.post('/', upload.single('thumb'), async (req, res, next) => {
       if (req.file && req.file.buffer) {
         buffer = req.file.buffer;
       } 
-      if ((payload.Metadata.librarySectionType == 'show' && payload.Metadata.grandparentThumb) || payload.Metadata.thumb) {
+      if ((payload.Metadata.type == 'episode' && payload.Metadata.grandparentThumb) || payload.Metadata.thumb) {
         console.log('[REDIS]', `Retrieving image from  ${payload.Metadata.thumb}`);
         buffer = await request.get({
-          uri: `http://plex.neil.pach.one${payload.Metadata.librarySectionType == 'show' ? payload.Metadata.grandparentThumb : payload.Metadata.thumb}?X-Plex-Token=${PLEX_TOKEN}`,
+          uri: `http://plex.neil.pach.one${payload.Metadata.type == 'episode' ? payload.Metadata.grandparentThumb : payload.Metadata.thumb}?X-Plex-Token=${PLEX_TOKEN}`,
           encoding: null
         });
       }
