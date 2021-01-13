@@ -198,7 +198,7 @@ ${formatSubtitle(payload.Metadata)}`;
 
   if(rating.length)
     message += `
-    ${rating.join(' | ')}`;
+${rating.join(' | ')}`;
 
   
   const opts = {
