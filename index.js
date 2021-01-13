@@ -64,7 +64,6 @@ app.listen(port, () => {
 
 app.post('/', upload.single('thumb'), async (req, res, next) => {
   const payload = JSON.parse(req.body.payload);
-  console.log(payload);
   const isVideo = (['movie', 'episode', 'show'].includes(payload.Metadata.type));
   const isAudio = (payload.Metadata.type === 'track');
   const key = sha1(payload.Server.uuid + payload.Metadata.ratingKey);
@@ -79,6 +78,7 @@ app.post('/', upload.single('thumb'), async (req, res, next) => {
 
   // save new image
   if (payload.event === 'library.new') {
+    console.log(payload);
     if (image) {
       console.log('[REDIS]', `Using cached image ${key}`);
     } else {
