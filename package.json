@@ -12,6 +12,8 @@
   },
   "engineStrict": true,
   "dependencies": {
+    "@sentry/node": "^5.29.2",
+    "@sentry/tracing": "^5.29.2",
     "express": "^4.17.1",
     "ioredis": "^4.14.0",
     "morgan": "^1.8.1",

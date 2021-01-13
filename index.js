@@ -1,5 +1,28 @@
 const TelegramBot = require('node-telegram-bot-api');
 const express = require('express');
+const app = express();
+
+const Sentry = require("@sentry/node");
+const Tracing = require("@sentry/tracing");
+Sentry.init({
+  dsn: "https://be640c515ba84e739e4c8c03301a9049@sentry.nizek.com/11",
+  integrations: [
+    // enable HTTP calls tracing
+    new Sentry.Integrations.Http({ tracing: true }),
+    // enable Express.js middleware tracing
+    new Tracing.Integrations.Express({ app }),
+  ],
+  // We recommend adjusting this value in production, or using tracesSampler
+  // for finer control
+  tracesSampleRate: 1.0,
+});
+
+app.use(Sentry.Handlers.requestHandler());
+// TracingHandler creates a trace for every incoming request
+app.use(Sentry.Handlers.tracingHandler());
+
+
+
 const sharp = require('sharp');
 const morgan = require('morgan');
 const multer = require('multer');
@@ -51,7 +74,6 @@ const slack = {};
 //
 // express
 
-const app = express();
 const port = process.env.PORT || 11000;
 
 app.use(morgan('dev'));
@@ -141,6 +163,8 @@ app.use((req, res, next) => {
   err.status = 404;
   next(err);
 });
+
+app.use(Sentry.Handlers.errorHandler());
 
 app.use((err, req, res, next) => {
   res.status(err.status || 500);
