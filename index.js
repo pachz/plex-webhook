@@ -178,7 +178,7 @@ function formatSubtitle(metadata) {
       ret += ' - ' + metadata.title;
     }
   } else if (metadata.type === 'movie') {
-    ret = metadata.tagline;
+    ret = metadata.summary;
   } else if (metadata.summary) {
     ret = metadata.summary;
   }
@@ -200,7 +200,7 @@ ${formatSubtitle(payload.Metadata)}`;
 
   if(rating.length)
     message += `
-${rating.join(' | ')}`;
+${rating.join(' — ')}`;
 
   
   const opts = {
