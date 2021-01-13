@@ -172,6 +172,8 @@ function formatSubtitle(metadata) {
       ret = `S${metadata.parentIndex} E${metadata.index}`;
     } else if (metadata.originallyAvailableAt) {
       ret = metadata.originallyAvailableAt;
+    } else if (metadata.summary) {
+      ret = metadata.summary;
     }
 
     if (metadata.title) {
