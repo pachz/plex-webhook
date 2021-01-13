@@ -186,8 +186,19 @@ function formatSubtitle(metadata) {
 
 function notifyTelegram(imageUrl, payload, action) {
 
-  const message = `<strong>${formatTitle(payload.Metadata)}</strong>
-  ${formatSubtitle(payload.Metadata)}`;
+  let rating = [];
+  if(payload.Metadata.audienceRating)
+    rating.push(`🍿 ${payload.Metadata.audienceRating}`)
+
+  if(payload.Metadata.rating)
+    rating.push(`📺 ${payload.Metadata.rating}`)
+
+  let message = `<strong>${formatTitle(payload.Metadata)}</strong>
+${formatSubtitle(payload.Metadata)}`;
+
+  if(rating.length)
+    message += `
+    ${rating.join(' | ')}`;
 
   
   const opts = {
@@ -197,7 +208,6 @@ function notifyTelegram(imageUrl, payload, action) {
 
   if(imageUrl){
     bot.sendPhoto(channelId, imageUrl, opts);
-    bot.sendMessage(channelId, message, opts);
   } else {
     bot.sendMessage(channelId, message, opts);
   }
