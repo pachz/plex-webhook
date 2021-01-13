@@ -172,8 +172,6 @@ function formatSubtitle(metadata) {
       ret = `S${metadata.parentIndex} E${metadata.index}`;
     } else if (metadata.originallyAvailableAt) {
       ret = metadata.originallyAvailableAt;
-    } else if (metadata.summary) {
-      ret = metadata.summary;
     }
 
     if (metadata.title) {
@@ -181,6 +179,8 @@ function formatSubtitle(metadata) {
     }
   } else if (metadata.type === 'movie') {
     ret = metadata.tagline;
+  } else if (metadata.summary) {
+    ret = metadata.summary;
   }
 
   return ret;
