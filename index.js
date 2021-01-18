@@ -229,7 +229,8 @@ ${rating.join(' — ')}`;
   
   const opts = {
     caption: message,
-    parse_mode: 'HTML'
+    parse_mode: 'HTML',
+    disable_notification: true
   };
 
   if(imageUrl){
