@@ -112,7 +112,7 @@ app.post('/', upload.single('thumb'), async (req, res, next) => {
       if ((payload.Metadata.type == 'episode' && payload.Metadata.grandparentThumb) || payload.Metadata.thumb) {
         console.log('[REDIS]', `Retrieving image from  ${payload.Metadata.thumb}`);
         buffer = await request.get({
-          uri: `http://plex.neil.pach.one${payload.Metadata.type == 'episode' ? payload.Metadata.grandparentThumb : payload.Metadata.thumb}?X-Plex-Token=${PLEX_TOKEN}`,
+          uri: `http://plex.max.pach.one${payload.Metadata.type == 'episode' ? payload.Metadata.grandparentThumb : payload.Metadata.thumb}?X-Plex-Token=${PLEX_TOKEN}`,
           encoding: null
         });
       }
