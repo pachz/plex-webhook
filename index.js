@@ -40,6 +40,7 @@ const SEVEN_DAYS = 7 * 24 * 60 * 60; // in seconds
 
 const appURL = process.env.APP_URL;
 const redis = new Redis(process.env.REDIS_URL);
+console.log('redis url', process.env.REDIS_URL)
 const TOKEN = process.env.T_TOKEN || 'XXX';
 const PLEX_TOKEN = process.env.PLEX_TOKEN || 'XXX';
 
