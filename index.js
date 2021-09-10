@@ -251,7 +251,15 @@ ${formatSubtitle(payload.Metadata)}`;
     message += `
 ${rating.join(' — ')}`;
 
+
+  const params = new URLSearchParams();
+  paramsStr.append('key', payload.Metadata.key);
+
+  const url = `https://pach.rocks/web/index.html#!/server/766042f58d5012bd3547a0ac33bec2a8c8d805dd/details?${params.toString()}`;
   
+  message += `
+<a href='${url}'>MAX Media</a>`
+
   const opts = {
     caption: message,
     parse_mode: 'HTML',
