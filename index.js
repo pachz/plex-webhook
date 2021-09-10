@@ -21,9 +21,7 @@ Sentry.init({
 });
 
 app.use(Sentry.Handlers.requestHandler());
-// TracingHandler creates a trace for every incoming request
 app.use(Sentry.Handlers.tracingHandler());
-
 
 
 const sharp = require('sharp');
