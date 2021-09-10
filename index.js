@@ -90,9 +90,7 @@ app.post('/', upload.single('thumb'), async (req, res, next) => {
 
   // missing required properties
   if (!payload.user || !payload.Metadata) {
-    const err = new Error('Payload missing details')
-    Sentry.captureException(err)
-    console.error(err, payload);
+    console.log('not libray new', payload.event);
     return res.sendStatus(400);
   }
 
