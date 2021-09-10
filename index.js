@@ -88,14 +88,20 @@ app.listen(port, () => {
 
 app.post('/', upload.single('thumb'), async (req, res, next) => {
   const payload = JSON.parse(req.body.payload);
-  const isVideo = (['movie', 'episode', 'show'].includes(payload.Metadata.type));
-  const isAudio = (payload.Metadata.type === 'track');
-  const key = sha1(payload.Server.uuid + payload.Metadata.ratingKey);
 
   // missing required properties
   if (!payload.user || !payload.Metadata || !(isAudio || isVideo)) {
+    const err = new Error('Payload missing details')
+    err.payload = payload;
+    Sentry.setExtra('error', err)
+    Sentry.captureException(err)
     return res.sendStatus(400);
   }
+
+  
+  const isVideo = (['movie', 'episode', 'show'].includes(payload.Metadata.type));
+  const isAudio = (payload.Metadata.type === 'track');
+  const key = sha1(payload.Server.uuid + payload.Metadata.ratingKey);
 
   // retrieve cached image
   let image = await redis.getBuffer(key);
