@@ -226,9 +226,6 @@ function formatSubtitle(metadata) {
 }
 
 async function notifyTelegram(imageUrl, payload, action) {
-  const e = new Event('Notify Telegram');
-  e.payload = payload;
-  Sentry.captureEvent(e);
 
   let rating = [];
   if(payload.Metadata.audienceRating)
