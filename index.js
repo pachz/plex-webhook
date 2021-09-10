@@ -88,8 +88,6 @@ app.post('/', upload.single('thumb'), async (req, res, next) => {
   // missing required properties
   if (!payload.user || !payload.Metadata) {
     const err = new Error('Payload missing details')
-    err.payload = payload;
-    Sentry.setExtra('error', err)
     Sentry.captureException(err)
     console.error(err, payload);
     return res.sendStatus(400);
@@ -102,8 +100,6 @@ app.post('/', upload.single('thumb'), async (req, res, next) => {
 
   if( !(isAudio || isVideo) ){
     const err = new Error('Payload not video or audio...')
-    err.payload = payload;
-    Sentry.setExtra('error', err)
     Sentry.captureException(err)
     console.error(err, payload);
     return res.sendStatus(400);
