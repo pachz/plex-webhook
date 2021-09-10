@@ -91,7 +91,7 @@ app.post('/', upload.single('thumb'), async (req, res, next) => {
   // missing required properties
   if (!payload.user || !payload.Metadata) {
     console.log('not libray new', payload.event);
-    return res.sendStatus(400);
+    return res.sendStatus(200);
   }
 
   
