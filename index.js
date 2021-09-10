@@ -225,7 +225,7 @@ function formatSubtitle(metadata) {
   return ret;
 }
 
-function notifyTelegram(imageUrl, payload, action) {
+async function notifyTelegram(imageUrl, payload, action) {
   const e = new Event('Notify Telegram');
   e.payload = payload;
   Sentry.captureEvent(e);
