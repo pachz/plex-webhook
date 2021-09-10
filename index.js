@@ -1,9 +1,12 @@
 const TelegramBot = require('node-telegram-bot-api');
 const express = require('express');
+const crypto = require('crypto');
 const app = express();
 
 const Sentry = require("@sentry/node");
 const Tracing = require("@sentry/tracing");
+
+const MSG_TITLE_TTL = process.env.MSG_TITLE_TTL || 15 * 60
 
 Sentry.init({
   release: "plex-notifications@" + process.env.npm_package_version,
@@ -184,6 +187,10 @@ app.use((err, req, res, next) => {
 //
 // helpers
 
+function md5Text(text){
+  return crypto.createHash('md5').update(text.toString()).digest("hex")  ;;
+}
+
 function formatTitle(metadata) {
   if (metadata.grandparentTitle) {
     return metadata.grandparentTitle;
@@ -231,8 +238,15 @@ function notifyTelegram(imageUrl, payload, action) {
 
   if(payload.Metadata.rating)
     rating.push(`📺 ${payload.Metadata.rating}`)
+  
+  const msgTitle = formatTitle(payload.Metadata);
 
-  let message = `<strong>${formatTitle(payload.Metadata)}</strong>
+  if(await redis.get(`title:${md5Text(msgTitle)}`)){
+    return false;
+  }
+  await redis.setex(`title:${md5Text(msgTitle)}`, MSG_TITLE_TTL, 1);
+
+  let message = `<strong>${msgTitle}</strong>
 ${formatSubtitle(payload.Metadata)}`;
 
   if(rating.length)
