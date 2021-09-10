@@ -95,6 +95,7 @@ app.post('/', upload.single('thumb'), async (req, res, next) => {
     err.payload = payload;
     Sentry.setExtra('error', err)
     Sentry.captureException(err)
+    console.error(err, payload);
     return res.sendStatus(400);
   }
 
@@ -108,6 +109,7 @@ app.post('/', upload.single('thumb'), async (req, res, next) => {
     err.payload = payload;
     Sentry.setExtra('error', err)
     Sentry.captureException(err)
+    console.error(err, payload);
     return res.sendStatus(400);
   }
 
