@@ -6,6 +6,8 @@ const Sentry = require("@sentry/node");
 const Tracing = require("@sentry/tracing");
 
 Sentry.init({
+  release: "plex-notifications@" + process.env.npm_package_version,
+  
   dsn: process.env.SENTRY_DSN,
   integrations: [
     // enable HTTP calls tracing
