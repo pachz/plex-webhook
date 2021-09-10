@@ -253,7 +253,7 @@ ${rating.join(' — ')}`;
 
 
   const params = new URLSearchParams();
-  paramsStr.append('key', payload.Metadata.key);
+  params.append('key', payload.Metadata.key);
 
   const url = `https://pach.rocks/web/index.html#!/server/766042f58d5012bd3547a0ac33bec2a8c8d805dd/details?${params.toString()}`;
   
