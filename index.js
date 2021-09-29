@@ -194,7 +194,7 @@ function formatTitle(metadata) {
     return metadata.grandparentTitle;
   } else {
     let ret = metadata.title;
-    if (metadata.year) {
+    if (metadata.year && !metadata.title.includes(`${metadata.year}`)) {
       ret += ` (${metadata.year})`;
     }
     return ret;
