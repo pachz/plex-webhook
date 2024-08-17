@@ -278,9 +278,9 @@ ${rating.join(' — ')}`;
 
 
 	const params = new URLSearchParams();
-	params.append('key', payload.Metadata.primaryExtraKey || payload.Metadata.key);
+	params.append('key', payload.Metadata.key.replace('/children', ''));
 
-	const url = `https://pach.rocks/web/index.html#!/server/766042f58d5012bd3547a0ac33bec2a8c8d805dd/details?${params.toString()}`;
+	const url = `https://pach.rocks/web/index.html#!/server/${payload.Server?.uuid}/details?${params.toString()}`;
 
   const library = formatLibrary(payload.Metadata);
 
