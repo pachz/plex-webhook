@@ -210,6 +210,11 @@ function formatSlug(metadata) {
     return metadata.parentSlug;
   }
 
+  if (metadata.slug) {
+    return metadata.slug;
+  }
+
+
   return null;
 }
 
