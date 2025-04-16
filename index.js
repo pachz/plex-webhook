@@ -2,6 +2,7 @@ const TelegramBot = require('node-telegram-bot-api');
 const express = require('express');
 const crypto = require('crypto');
 const app = express();
+const serverless = require("serverless-http");
 
 const Sentry = require("@sentry/node");
 const Tracing = require("@sentry/tracing");
@@ -299,3 +300,7 @@ ${rating.join(' — ')}`;
 		bot.sendMessage(channelId, message, opts);
 	}
 }
+
+
+module.exports = app;
+module.exports.handler = serverless(app);
