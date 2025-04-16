@@ -34,7 +34,6 @@ const multer = require('multer');
 const Redis = require('ioredis');
 const request = require('request-promise-native');
 const sha1 = require('sha1');
-// const Slack = require('slack-node');
 const upload = multer({ storage: multer.memoryStorage() });
 
 const SEVEN_DAYS = 7 * 24 * 60 * 60; // in seconds
@@ -71,7 +70,6 @@ bot.on('message', (msg) => {
 	console.log(msg);
 });
 
-const slack = {};
 
 //
 // express
@@ -143,10 +141,10 @@ app.post('/webhook', upload.single('thumb'), async (req, res, next) => {
 		}
 
 		if (image) {
-			console.log('[SLACK]', `Sending ${key} with image`);
+			console.log('[Telegram]', `Sending ${key} with image`);
 			notifyTelegram(appURL + '/images/' + key, payload);
 		} else {
-			console.log('[SLACK]', `Sending ${key} without image`);
+			console.log('[Telegram]', `Sending ${key} without image`);
 			notifyTelegram(null, payload);
 		}
 	}
