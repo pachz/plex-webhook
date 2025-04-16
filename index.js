@@ -86,7 +86,7 @@ app.listen(port, () => {
 //
 // routes
 
-app.post('/', upload.single('thumb'), async (req, res, next) => {
+app.post('/webhook', upload.single('thumb'), async (req, res, next) => {
 	const payload = JSON.parse(req.body.payload);
 
 	// missing required properties
