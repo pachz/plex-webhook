@@ -95,7 +95,7 @@ app.post('/webhook', upload.single('thumb'), async (req, res, next) => {
 			if ((payload.Metadata.type == 'episode' && payload.Metadata.grandparentThumb) || payload.Metadata.thumb) {
 				console.log('[REDIS]', `Retrieving image from  ${payload.Metadata.thumb}`);
 				buffer = await request.get({
-					uri: `http://plex.max.pach.one${payload.Metadata.type == 'episode' ? payload.Metadata.grandparentThumb : payload.Metadata.thumb}?X-Plex-Token=${PLEX_TOKEN}`,
+					uri: `https://plex.max.pach.one${payload.Metadata.type == 'episode' ? payload.Metadata.grandparentThumb : payload.Metadata.thumb}?X-Plex-Token=${PLEX_TOKEN}`,
 					encoding: null
 				});
 			}
@@ -236,6 +236,7 @@ async function notifyTelegram(imageUrl, payload, action) {
   const slug = formatSlug(payload.Metadata);
 
 	if (slug && await redis.get(`slug:${md5Text(slug)}`)) {
+		console.log('skipping', slug);
 		return false;
 	}
 
