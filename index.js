@@ -268,9 +268,9 @@ ${rating.join(' — ')}`;
 	};
 
 	if (imageUrl) {
-		bot.sendPhoto(channelId, imageUrl, opts);
+		bot.sendPhoto(channelId, imageUrl, opts).catch(console.error);
 	} else {
-		bot.sendMessage(channelId, message, opts);
+		bot.sendMessage(channelId, message, opts).catch(console.error);
 	}
 }
 
