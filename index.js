@@ -159,7 +159,7 @@ app.use((err, req, res, next) => {
 // helpers
 
 function md5Text(text) {
-	return crypto.createHash('md5').update(text.toString()).digest("hex");;
+	return crypto.createHash('md5').update(text.toString()).digest("hex");
 }
 
 function formatTitle(metadata) {
@@ -236,7 +236,7 @@ async function notifyTelegram(imageUrl, payload, action) {
   const slug = formatSlug(payload.Metadata);
 
 	if (slug && await redis.get(`slug:${md5Text(slug)}`)) {
-		console.log('skipping', slug);
+		console.log('skipping', slug, md5Text(slug));
 		return false;
 	}
 
