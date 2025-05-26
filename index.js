@@ -133,7 +133,7 @@ app.post("/webhook", upload.single("thumb"), async (req, res, next) => {
     }
   }
 
-  res.sendStatus(200);
+  setTimeout(() => res.sendStatus(200), 3000);
 });
 
 app.get("/images/:key", async (req, res, next) => {
