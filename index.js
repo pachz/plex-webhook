@@ -7,6 +7,8 @@ const serverless = require("serverless-http");
 const Sentry = require("@sentry/node");
 const Tracing = require("@sentry/tracing");
 
+const FUNCTIONS = require('@vercel/functions');
+
 const MSG_TITLE_TTL = process.env.MSG_TITLE_TTL || 20 * 60;
 
 Sentry.init({
@@ -272,9 +274,9 @@ ${rating.join(" — ")}`;
   };
 
   if (imageUrl) {
-    bot.sendPhoto(channelId, imageUrl, opts).catch(console.error);
+    FUNCTIONS.waitUntil(bot.sendPhoto(channelId, imageUrl, opts).catch(console.error));
   } else {
-    bot.sendMessage(channelId, message, opts).catch(console.error);
+    FUNCTIONS.waitUntil(bot.sendMessage(channelId, message, opts).catch(console.error));
   }
 }
 
