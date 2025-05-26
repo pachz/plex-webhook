@@ -126,10 +126,10 @@ app.post("/webhook", upload.single("thumb"), async (req, res, next) => {
 
     if (image) {
       console.log("[Telegram]", `Sending ${key} with image`);
-      FUNCTIONS.waitUntil(notifyTelegram(appURL + "/images/" + key, payload));
+      FUNCTIONS.waitUntil(notifyTelegram(appURL + "/images/" + key, payload).catch(console.error));
     } else {
       console.log("[Telegram]", `Sending ${key} without image`);
-      FUNCTIONS.waitUntil(notifyTelegram(null, payload));
+      FUNCTIONS.waitUntil(notifyTelegram(null, payload).catch(console.error));
     }
   }
 
@@ -259,9 +259,7 @@ ${rating.join(" — ")}`;
   const params = new URLSearchParams();
   params.append("key", payload.Metadata.key.replace("/children", ""));
 
-  const url = `https://pach.rocks/web/index.html#!/server/${
-    payload.Server?.uuid
-  }/details?${params.toString()}`;
+  const url = `https://pach.rocks/web/index.html#!/server/${payload.Server?.uuid}/details?${params.toString()}`;
 
   const library = formatLibrary(payload.Metadata);
 
