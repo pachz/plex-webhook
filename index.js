@@ -50,7 +50,7 @@ const channelId = "-1001304838206";
 
 const port = process.env.PORT || 11000;
 
-app.use(morgan("dev"));
+app.use(morgan("combined"));
 app.listen(port, () => {
   console.log(`Express app running at http://localhost:${port}`);
 });
