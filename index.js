@@ -236,7 +236,8 @@ async function notifyTelegram(imageUrl, payload, action) {
   if (payload.Metadata.audienceRating)
     rating.push(`🍿 ${payload.Metadata.audienceRating}`);
 
-  if (payload.Metadata.rating) rating.push(`📺 ${payload.Metadata.rating}`);
+  if (payload.Metadata.rating)
+    rating.push(`📺 ${payload.Metadata.rating}`);
 
   const msgTitle = formatTitle(payload.Metadata);
   const slug = formatSlug(payload.Metadata);
@@ -274,9 +275,9 @@ ${rating.join(" — ")}`;
   };
 
   if (imageUrl) {
-    FUNCTIONS.waitUntil(bot.sendPhoto(channelId, imageUrl, opts).catch(console.error));
+    FUNCTIONS.waitUntil(bot.sendPhoto(channelId, imageUrl, opts).then(console.log).catch(console.error));
   } else {
-    FUNCTIONS.waitUntil(bot.sendMessage(channelId, message, opts).catch(console.error));
+    FUNCTIONS.waitUntil(bot.sendMessage(channelId, message, opts).then(console.log).catch(console.error));
   }
 }
 
