@@ -126,10 +126,10 @@ app.post("/webhook", upload.single("thumb"), async (req, res, next) => {
 
     if (image) {
       console.log("[Telegram]", `Sending ${key} with image`);
-      notifyTelegram(appURL + "/images/" + key, payload);
+      FUNCTIONS.waitUntil(notifyTelegram(appURL + "/images/" + key, payload));
     } else {
       console.log("[Telegram]", `Sending ${key} without image`);
-      notifyTelegram(null, payload);
+      FUNCTIONS.waitUntil(notifyTelegram(null, payload));
     }
   }
 
@@ -275,9 +275,9 @@ ${rating.join(" — ")}`;
   };
 
   if (imageUrl) {
-    FUNCTIONS.waitUntil(bot.sendPhoto(channelId, imageUrl, opts).then(console.log).catch(console.error));
+    await bot.sendPhoto(channelId, imageUrl, opts).then(console.log).catch(console.error);
   } else {
-    FUNCTIONS.waitUntil(bot.sendMessage(channelId, message, opts).then(console.log).catch(console.error));
+    await bot.sendMessage(channelId, message, opts).then(console.log).catch(console.error);
   }
 }
 
