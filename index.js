@@ -240,18 +240,26 @@ async function notifyTelegram(imageUrl, payload, action) {
   if (payload.Metadata.rating)
     rating.push(`📺 ${payload.Metadata.rating}`);
 
+  console.log('still in notifyTelegram [1]')
+
   const msgTitle = formatTitle(payload.Metadata);
   const slug = formatSlug(payload.Metadata);
+
+  console.log('still in notifyTelegram [2]');
 
   if (slug && (await redis.get(`slug:${md5Text(slug)}`))) {
     console.log("skipping", slug, md5Text(slug));
     return false;
   }
 
+  console.log('still in notifyTelegram [3]')
+
   if (slug) await redis.setex(`slug:${md5Text(slug)}`, MSG_TITLE_TTL, 1);
 
   let message = `<strong>${msgTitle}</strong>
 ${formatSubtitle(payload.Metadata)}`;
+
+  console.log('still in notifyTelegram [4]')
 
   if (rating.length)
     message += `
@@ -260,9 +268,13 @@ ${rating.join(" — ")}`;
   const params = new URLSearchParams();
   params.append("key", payload.Metadata.key.replace("/children", ""));
 
+  console.log('still in notifyTelegram [5]')
+
   const url = `https://pach.rocks/web/index.html#!/server/${payload.Server?.uuid}/details?${params.toString()}`;
 
   const library = formatLibrary(payload.Metadata);
+
+  console.log('still in notifyTelegram [6]')
 
   message += `
 <a href='${url}'>🎬 ${library}</a>`;
@@ -273,7 +285,7 @@ ${rating.join(" — ")}`;
     disable_notification: true,
   };
 
-  console.log('got the message ready');
+  console.log('still in notifyTelegram [7]')
 
   if (imageUrl) {
     await bot.sendPhoto(channelId, imageUrl, opts).then(console.log).catch(console.error);
