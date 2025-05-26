@@ -232,6 +232,7 @@ function formatLibrary(metadata) {
 }
 
 async function notifyTelegram(imageUrl, payload, action) {
+  console.log('now in notifyTelegram')
   let rating = [];
   if (payload.Metadata.audienceRating)
     rating.push(`🍿 ${payload.Metadata.audienceRating}`);
@@ -271,6 +272,8 @@ ${rating.join(" — ")}`;
     parse_mode: "HTML",
     disable_notification: true,
   };
+
+  console.log('got the message ready');
 
   if (imageUrl) {
     await bot.sendPhoto(channelId, imageUrl, opts).then(console.log).catch(console.error);
