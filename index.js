@@ -279,6 +279,7 @@ ${rating.join(" — ")}`;
   } else {
     await bot.sendMessage(channelId, message, opts).then(console.log).catch(console.error);
   }
+  console.log("telegram message sent");
 }
 
 console.log("Serverless function 'telegram-bot' initialized...");
