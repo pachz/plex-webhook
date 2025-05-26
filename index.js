@@ -281,5 +281,7 @@ ${rating.join(" — ")}`;
   }
 }
 
+console.log("Serverless function 'telegram-bot' initialized.");
+
 module.exports = app;
 module.exports.handler = serverless(app);
