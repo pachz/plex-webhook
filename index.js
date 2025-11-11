@@ -101,7 +101,7 @@ app.post("/webhook", upload.single("thumb"), async (req, res, next) => {
           `Retrieving image from  ${payload.Metadata.thumb}`
         );
         buffer = await request.get({
-          uri: `https://plex.max.pach.one${
+          uri: `http://n.pach.rocks:32400${
             payload.Metadata.type == "episode"
               ? payload.Metadata.grandparentThumb
               : payload.Metadata.thumb
